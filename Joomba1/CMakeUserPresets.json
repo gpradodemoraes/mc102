@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "configurePresets": [ {
+      "name": "default",
+      "inherits": "x64-debug",
+      "environment": {
+        "VCPKG_ROOT": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\vcpkg"
+      }
+    }
+  ]
+}
