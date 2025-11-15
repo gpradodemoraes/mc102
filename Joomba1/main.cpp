@@ -2,6 +2,7 @@
 
 #include "Joomba1.h"
 #include <string>
+#include <sstream>
 #include <filesystem>
 #include <regex>
 #include <fstream>
@@ -41,15 +42,39 @@ int main(int argc, char** argv) {
 		std::string fileInput(fmt::format("{}/arq{}.in", argv[1], fileNumber));
 		std::string fileOutput(fmt::format("{}/arq{}.out", argv[1], fileNumber));
 		std::ifstream file(fileInput);
-		unsigned int MAX_CUSTO = 0;
-		std::string seqInicial{};
-		std::string seqFinal{};
+		unsigned int ANDARES = 0;
+		unsigned int JANELAS = 0;
+		std::vector<instrucao> instrucoes;
 		if (file.good() && file.is_open()) {
 			std::string line;
 			while (getline(file, line)) {
 				fmt::println("|=>{}", line);
+				std::stringstream ss(line);
+				std::string word;
+				instrucao i{};
+				while (ss >> word) {
+					if (ANDARES == 0) {
+						ANDARES = stoi(word);
+						continue;
+					}
+					if (JANELAS == 0) {
+						JANELAS = stoi(word);
+						continue;
+					}
+					if (i.direcao == 0) {
+						i.direcao = word.at(0);
+						continue;
+					}
+					if (i.distancia == 0) {
+						i.distancia = word.at(0) - 48;
+						instrucoes.insert(instrucoes.begin(), i);
+						continue;
+					}
+				}
 			}
 		}
+
+
 	}
 
 	return 0;
