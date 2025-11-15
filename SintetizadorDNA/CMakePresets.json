@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "configurePresets": [ {
+      "name": "tarefa14",
+	  "displayName": "Tarefa 14",
+	  "description": "Tarefa de número 14 da disciplina MC102",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+      "CMAKE_BUILD_TYPE": "Debug",  
+      "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }, {
+      "name": "tarefa14RELEASE",
+	  "displayName": "Tarefa 14R",
+	  "description": "Tarefa de número 14 da disciplina MC102",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/Release",
+      "cacheVariables": {
+      "CMAKE_BUILD_TYPE": "Release",  
+      "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+
+  ]
+}
