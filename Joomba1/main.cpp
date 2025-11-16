@@ -42,17 +42,18 @@ int main(int argc, char** argv) {
 		std::string fileInput(fmt::format("{}/arq{}.in", argv[1], fileNumber));
 		std::string fileOutput(fmt::format("{}/arq{}.out", argv[1], fileNumber));
 		std::ifstream file(fileInput);
-		uint8_t ANDARES = 0;
-		uint8_t JANELAS = 0;
-		std::vector<instrucao> instrucoes;
+		int8_t ANDARES = 0;
+		int8_t JANELAS = 0;
+		std::vector<instrucao> instrucoes{};
 		if (file.good() && file.is_open()) {
 			std::string line;
 			while (getline(file, line)) {
-				fmt::println("|=>{}", line);
+				//fmt::println("|=>{}", line);
 				std::stringstream ss(line);
 				std::string word;
 				instrucao i{};
 				while (ss >> word) {
+					if(word.at(0) == 'F') break;
 					if (ANDARES == 0) {
 						ANDARES = stoi(word);
 						continue;
@@ -73,7 +74,17 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
+		file.close();
 		processa_entrada_joomba_1(&instrucoes, ANDARES, JANELAS);
+		fmt::println("===========================+=+=+===========================");
+		std::ifstream fileOut(fileOutput);
+		if (fileOut.good() && fileOut.is_open()) {
+			std::string line;
+			while (getline(file, line)) {
+				fmt::println("{}", line);
+			}
+			fileOut.close();
+		}
 	}
 
 	return 0;
