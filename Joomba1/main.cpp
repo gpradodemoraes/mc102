@@ -38,12 +38,12 @@ int main(int argc, char** argv) {
 	std::vector<std::string> filesNumbers{};
 	if (get_files_numbers(argv[1], &filesNumbers) != 0) return 1;
 	for (auto fileNumber : filesNumbers) {
-		fmt::println("================{}================", fileNumber);
+		fmt::println("===============+=={}==+================", fileNumber);
 		std::string fileInput(fmt::format("{}/arq{}.in", argv[1], fileNumber));
 		std::string fileOutput(fmt::format("{}/arq{}.out", argv[1], fileNumber));
 		std::ifstream file(fileInput);
-		int8_t ANDARES = 0;
-		int8_t JANELAS = 0;
+		int32_t ANDARES = 0;
+		int32_t JANELAS = 0;
 		std::vector<instrucao> instrucoes{};
 		if (file.good() && file.is_open()) {
 			std::string line;
@@ -76,11 +76,11 @@ int main(int argc, char** argv) {
 		}
 		file.close();
 		processa_entrada_joomba_1(&instrucoes, ANDARES, JANELAS);
-		fmt::println("===========================+=+=+===========================");
+		fmt::println("===============+==++==+================");
 		std::ifstream fileOut(fileOutput);
 		if (fileOut.good() && fileOut.is_open()) {
 			std::string line;
-			while (getline(file, line)) {
+			while (getline(fileOut, line)) {
 				fmt::println("{}", line);
 			}
 			fileOut.close();

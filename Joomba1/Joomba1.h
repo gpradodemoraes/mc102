@@ -5,11 +5,11 @@
 #include <vector>
 
 struct instrucao {
-	int8_t direcao;
-	int8_t distancia;
+	int32_t direcao;
+	int32_t distancia;
 };
 
-bool processa_entrada_joomba_1(std::vector<instrucao>* instrucoes, const int8_t ANDARES, const int8_t JANELAS);
+bool processa_entrada_joomba_1(std::vector<instrucao>* instrucoes, const int32_t ANDARES, const int32_t JANELAS);
 
 
 // TODO: Reference additional headers your program requires here.
