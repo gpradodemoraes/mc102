@@ -9,16 +9,20 @@ static int32_t current_position = 0;
 static std::unique_ptr<char[]> janelas_array;
 
 static void print_predio() {
-	for (int8_t a = total_andares - 1; a >= 0;--a) {
-		int32_t posicao = 4 * total_janelas * a;
+	const char* faces[] = {"NORTE", "OESTE", "SUL", "LESTE"};
+	for (int8_t f = 0; f < 4; ++f) {
+		fmt::println("{}", faces[f]);
+		for (int8_t a = total_andares - 1; a >= 0;--a) {
+			int32_t posicao = 4 * total_janelas * a + f * total_janelas;
+			for (int8_t j = 0; j < total_janelas; ++j)
+				fmt::print("{} ", janelas_array[static_cast<int32_t>(posicao) + j]);
+			fmt::println("");
+		}
 		for (int8_t j = 0; j < total_janelas; ++j)
-			fmt::print("{} ", janelas_array[static_cast<int32_t>(posicao) + j]);
+			fmt::print("- ");
+
 		fmt::println("");
 	}
-	for (int8_t j = 0; j < total_janelas; ++j)
-		fmt::print("- ");
-
-	fmt::println("");
 
 
 }
