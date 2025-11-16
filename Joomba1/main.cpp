@@ -42,8 +42,8 @@ int main(int argc, char** argv) {
 		std::string fileInput(fmt::format("{}/arq{}.in", argv[1], fileNumber));
 		std::string fileOutput(fmt::format("{}/arq{}.out", argv[1], fileNumber));
 		std::ifstream file(fileInput);
-		unsigned int ANDARES = 0;
-		unsigned int JANELAS = 0;
+		uint8_t ANDARES = 0;
+		uint8_t JANELAS = 0;
 		std::vector<instrucao> instrucoes;
 		if (file.good() && file.is_open()) {
 			std::string line;
@@ -73,8 +73,7 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
-
-
+		processa_entrada_joomba_1(&instrucoes, ANDARES, JANELAS);
 	}
 
 	return 0;
