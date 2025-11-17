@@ -1,16 +1,10 @@
 {
-  "version": 2,
+  "version": 3,
   "configurePresets": [ {
       "name": "default",
-      "inherits": "tarefa14",
+      "inherits": "x64-debug",
       "environment": {
-        "VCPKG_ROOT": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\vcpkg"
-      }
-    }, {
-      "name": "release",
-      "inherits": "tarefa14RELEASE",
-      "environment": {
-        "VCPKG_ROOT": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\vcpkg"
+        "VCPKG_ROOT": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\vcpkg"
       }
     }
   ]
