@@ -30,10 +30,10 @@ foreach ($file in Get-ChildItem -Path $test_dir -Filter "*.in") {
     $output_name = $file -replace '.in$','.out'
     Write-Host "<== $output_name"
     $TempFile = New-TemporaryFile
-    $process = Start-Process -FilePath $exe -ArgumentList $file -RedirectStandardOutput $TempFile -PassThru -NoNewWindow
+    $process = Start-Process -FilePath $exe -ArgumentList $file -RedirectStandardOutput $TempFile -PassThru
     $process.WaitForExit()
 
-    if ($LASTEXITCODE -ne 0) {
+    if ($process.ExitCode -ne 0) {
         Write-Host "processo retornou código de erro "$LASTEXITCODE
 		exit 1
     }
