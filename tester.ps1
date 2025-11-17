@@ -25,11 +25,20 @@ if (-Not (Test-Path -Path $exe -PathType Leaf)) {
 # 	Write-Host "programa $exe não é executável"
 # 	exit 1
 # }
+foreach ($file in Get-ChildItem -Path $test_dir -Filter "*.in") {
+    Write-Host "==> $file"
+    $output_name = $file -replace '.in$','.out'
+    Write-Host "<== $output_name"
+    $TempFile = New-TemporaryFile
+    $process = Start-Process -FilePath $exe -ArgumentList $file -RedirectStandardOutput $TempFile -PassThru -NoNewWindow
+    $process.WaitForExit()
 
-$process = Start-Process -FilePath $exe -ArgumentList "$test_dir\arq01.in" -RedirectStandardOutput "output.txt" -PassThru -NoNewWindow
-$process.WaitForExit()
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "processo retornou código de erro "$LASTEXITCODE
+		exit 1
+    }
+    Compare-Object -ReferenceObject (Get-Content $output_name) -DifferenceObject (Get-Content $TempFile)
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "processo retornou c�digo de erro "$LASTEXITCODE
 }
-Compare-Object -ReferenceObject (Get-Content "$test_dir\arq01.out") (Get-Content "output.txt")
+
+
