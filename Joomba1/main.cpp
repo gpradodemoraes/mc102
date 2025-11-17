@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 					continue;
 				}
 				if (i.distancia == 0) {
-					i.distancia = word.at(0) - 48;
+					i.distancia = stoi(word);
 					instrucoes.insert(instrucoes.begin(), i);
 					continue;
 				}

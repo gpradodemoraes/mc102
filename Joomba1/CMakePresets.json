@@ -26,6 +26,12 @@
             },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "vendor": {
+                "jetbrains.com/clion": {
+                    "toolchain": "Visual Studio",
+                    "generator": "Ninja"
+                }
             }
         },
         {
