@@ -13,7 +13,7 @@ project(Joomba1)
 
 find_package(fmt CONFIG REQUIRED)
 # Add source to this project's executable.
-add_executable(Joomba1 Joomba1.cpp main.cpp)
+add_executable(Joomba1 Joomba1.cpp predio.cpp main.cpp)
 set_property(TARGET Joomba1 PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(Joomba1 PRIVATE fmt::fmt)
