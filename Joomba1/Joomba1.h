@@ -9,6 +9,7 @@ struct instrucao {
 	int32_t distancia;
 };
 
+void parse_entrada_joomba1(char* filepath, std::vector<instrucao>* instrucoes, int32_t *ANDARES, int32_t *JANELAS);
 bool processa_entrada_joomba_1(std::vector<instrucao>* instrucoes, const int32_t ANDARES, const int32_t JANELAS);
 
 

@@ -1,6 +1,47 @@
 ﻿#include "Joomba1.h"
+#include <string>
+#include <sstream>
+#include <regex>
+#include <fstream>
 #include "predio.h"
 
+void parse_entrada_joomba1(char* filepath, std::vector<instrucao>* instrucoes, int32_t *ANDARES_, int32_t *JANELAS_) {
+	std::ifstream file(filepath);
+	if (file.good() && file.is_open()) {
+		int32_t JANELAS = 0;
+		int32_t ANDARES = 0;
+		std::string line;
+		while (getline(file, line)) {
+			//fmt::println("|=>{}", line);
+			std::stringstream ss(line);
+			std::string word;
+			instrucao i{};
+			while (ss >> word) {
+				if(word.at(0) == 'F') break;
+				if (ANDARES == 0) {
+					ANDARES = stoi(word);
+					continue;
+				}
+				if (JANELAS == 0) {
+					JANELAS = stoi(word);
+					continue;
+				}
+				if (i.direcao == 0) {
+					i.direcao = word.at(0);
+					continue;
+				}
+				if (i.distancia == 0) {
+					i.distancia = stoi(word);
+					instrucoes->insert(instrucoes->begin(), i);
+					continue;
+				}
+			}
+		}
+		file.close();
+		*ANDARES_ = ANDARES;
+		*JANELAS_ = JANELAS;
+	}
+}
 bool processa_entrada_joomba_1(std::vector<instrucao>* instrucoes,
 	const int32_t ANDARES,
 	const int32_t JANELAS) {

@@ -1,11 +1,23 @@
 {
   "version": 3,
   "configurePresets": [ {
-      "name": "default",
+      "name": "joomba1",
       "inherits": "x64-debug",
       "environment": {
-        "VCPKG_ROOT": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\vcpkg"
-      }
+		"VCPKG_ROOT": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\vcpkg"
+      },
+	  "cacheVariables": {
+		  "JOOMBA_1": "ON"
+	  }
+    }, {
+      "name": "joomba2",
+      "inherits": "x64-debug",
+      "environment": {
+		"VCPKG_ROOT": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\vcpkg"
+      },
+	  "cacheVariables": {
+		  "JOOMBA_2": "ON"
+	  }
     }
   ]
 }
