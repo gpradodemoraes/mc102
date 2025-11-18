@@ -5,7 +5,7 @@
 #include <vector>
 
 struct instrucao {
-	int32_t direcao;
+	char direcao;
 	int32_t distancia;
 };
 
