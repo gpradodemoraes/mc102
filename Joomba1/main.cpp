@@ -20,7 +20,11 @@ int main(const int argc, char** argv) {
 	bool retval = processa_entrada_joomba_1(&instrucoes, ANDARES, JANELAS);
 	return retval ? 0 : 1;
 #elif defined JOOMBA_2
-	print_hello_Joomba2();
-	return 0;
+	std::vector<posicao> posicoes;
+	int32_t ANDARES, JANELAS, COMANDOS;
+	if (parse_entrada_joomba2(argv[1], &posicoes, &ANDARES, &JANELAS, &COMANDOS)) {
+		return 0;
+	}
+	return 1;
 #endif
 }

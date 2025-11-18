@@ -38,7 +38,7 @@ void move_esquerda(int32_t posicoes, predio* p) {
 }
 void move_para_cima(int32_t posicoes, predio* p) {
 	for (int32_t i = 0; i < posicoes; ++i)
-		if (p->current_position < 4 * p->JANELAS * (p->ANDARES - 1)) {
+		if (pode_ir_para_cima(p)) {
 			p->janelas_array[p->current_position] = '.';
 			p->current_position += 4 * p->JANELAS;
 			p->janelas_array[p->current_position] = 'R';
@@ -46,7 +46,7 @@ void move_para_cima(int32_t posicoes, predio* p) {
 }
 void move_para_baixo(int32_t posicoes, predio* p) {
 	for (int32_t i = 0; i < posicoes; ++i)
-		if (p->current_position > 4 * p->JANELAS - 1) {
+		if (pode_ir_para_baixo(p)) {
 			p->janelas_array[p->current_position] = '.';
 			p->current_position -= 4 * p->JANELAS;
 			p->janelas_array[p->current_position] = 'R';

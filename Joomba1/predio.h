@@ -16,3 +16,10 @@ void move_para_cima(int32_t posicoes, predio* p);
 void move_para_baixo(int32_t posicoes, predio* p);
 predio* constroi_predio(int32_t ANDARES, int32_t JANELAS);
 void destroi_predio(predio* p);
+
+inline bool pode_ir_para_baixo(predio* p) {
+	return p->current_position > 4 * p->JANELAS - 1;
+}
+inline bool pode_ir_para_cima(predio *p) {
+	return p->current_position < 4 * p->JANELAS * (p->ANDARES - 1);
+}
