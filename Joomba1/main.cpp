@@ -23,6 +23,17 @@ int main(const int argc, char** argv) {
 	std::vector<posicao> posicoes;
 	int32_t ANDARES, JANELAS, COMANDOS;
 	if (parse_entrada_joomba2(argv[1], &posicoes, &ANDARES, &JANELAS, &COMANDOS)) {
+		predio* p = constroi_predio(ANDARES, JANELAS);
+		// transforma as janelas de sujas em limpas
+		int32_t array_size = ANDARES * JANELAS * 4;
+		memset(p->janelas_array, '.', array_size);
+		for (auto pos : posicoes) {
+			int32_t index = convert_posicao_to_index(pos.face, pos.andar, pos.janela, p);
+			if (index > 0)
+				p->janelas_array[index] = '#';
+		}
+		print_predio(p);
+		destroi_predio(p);
 		return 0;
 	}
 	return 1;

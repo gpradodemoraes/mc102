@@ -23,3 +23,6 @@ inline bool pode_ir_para_baixo(predio* p) {
 inline bool pode_ir_para_cima(predio *p) {
 	return p->current_position < 4 * p->JANELAS * (p->ANDARES - 1);
 }
+
+// andar = 0..ANDARES-1 ; janela = 1..JANELAS
+int32_t convert_posicao_to_index(char face, int32_t andar, int32_t janela, predio* p);

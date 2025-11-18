@@ -70,3 +70,16 @@ void destroi_predio(predio* p) {
 	free(p->janelas_array);
 	free(p);
 }
+
+int32_t convert_posicao_to_index(char face, int32_t andar, int32_t janela, predio* p) {
+	int32_t fator_multiplicador;
+	switch (face) {
+		case 'N': fator_multiplicador = 0; break;
+		case 'O': fator_multiplicador = 1; break;
+		case 'S': fator_multiplicador = 2; break;
+		case 'L': fator_multiplicador = 3; break;
+		default: fator_multiplicador = -1; break;
+	};
+	if (fator_multiplicador == -1) return -1;
+	return (fator_multiplicador * p->JANELAS + janela - 1) + (4 * p->JANELAS * andar);
+}

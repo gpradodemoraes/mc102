@@ -4,6 +4,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include "predio.h"
 struct posicao {
 	char face;
 	int32_t andar; // de 0->(ANDARES - 1)
