@@ -24,6 +24,7 @@ int main(const int argc, char** argv) {
 	int32_t ANDARES, JANELAS, COMANDOS;
 	if (parse_entrada_joomba2(argv[1], &posicoes, &ANDARES, &JANELAS, &COMANDOS)) {
 		predio* p = constroi_predio(ANDARES, JANELAS);
+		if (p == NULL) return 1;
 		// transforma as janelas de sujas em limpas
 		int32_t array_size = ANDARES * JANELAS * 4;
 		memset(p->janelas_array, '.', array_size);

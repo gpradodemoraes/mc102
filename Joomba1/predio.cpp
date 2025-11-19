@@ -56,15 +56,19 @@ void move_para_baixo(int32_t posicoes, predio* p) {
 predio* constroi_predio(const int32_t ANDARES_, const int32_t JANELAS_) {
 	int32_t array_size = ANDARES_ * JANELAS_ * 4;
 	predio* p = (predio*)malloc(sizeof(predio));
+	if (p) {
+		p->ANDARES = ANDARES_;
+		p->JANELAS = JANELAS_;
+		p->current_position = 0;
+		p->janelas_array = (char*) malloc(sizeof(char) * array_size);
+		if (p->janelas_array) {
+			memset(p->janelas_array, '#', array_size);
+			p->janelas_array[p->current_position] = 'R';
+		}
+		return p;
+	}
+	return NULL;
 
-	p->janelas_array = (char*) malloc(sizeof(char) * array_size);
-	p->ANDARES = ANDARES_;
-	p->JANELAS = JANELAS_;
-	memset(p->janelas_array, '#', array_size);
-	p->current_position = 0;
-	p->janelas_array[p->current_position] = 'R';
-
-	return p;
 }
 void destroi_predio(predio* p) {
 	free(p->janelas_array);
