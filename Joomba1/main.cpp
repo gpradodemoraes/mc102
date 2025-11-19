@@ -35,7 +35,7 @@ int main(const int argc, char** argv) {
 		}
 		print_predio(p);
 		instrucao_node root{'X', 0, nullptr};
-		if (checar_limpeza(&root, 1, p)) {
+		if (checar_limpeza(&root, COMANDOS, p)) {
 			fmt::println("Comandos encontrados");
 		} else {
 			fmt::println("Comandos não encontrados");
