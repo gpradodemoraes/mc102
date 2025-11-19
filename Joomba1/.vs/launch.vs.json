@@ -3,11 +3,22 @@
   "defaults": {},
   "configurations": [
     {
-        "type": "joomba1",
-        "project": "CMakeLists.txt",
-        "projectTarget": "Joomba1.exe",
-        "name": "Joomba1.exe",
-        "args": [ "..\\..\\..\\testes_copia_local\\arq07.in" ]
+      "type": "joomba1",
+      "project": "CMakeLists.txt",
+      "projectTarget": "Joomba1.exe",
+      "name": "Joomba1.exe",
+      "args": [
+        "..\\..\\..\\testes_copia_local\\arq07.in"
+      ]
+    },
+    {
+      "type": "joomba2",
+      "project": "CMakeLists.txt",
+      "projectTarget": "Joomba2.exe",
+      "name": "Joomba2.exe",
+        "args": [
+            "..\\..\\..\\..\\Joomba2\\testes\\arq01.in"
+        ]
     }
   ]
 }
