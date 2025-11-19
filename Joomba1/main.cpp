@@ -16,7 +16,7 @@ int main(const int argc, char** argv) {
 #if defined JOOMBA_1
 	std::vector<instrucao> instrucoes;
 	int32_t ANDARES, JANELAS;
-	parse_entrada_joomba1(argv[1], &instrucoes, &ANDARES, &JANELAS);
+	if (!parse_entrada_joomba1(argv[1], &instrucoes, &ANDARES, &JANELAS)) return 1;
 	bool retval = processa_entrada_joomba_1(&instrucoes, ANDARES, JANELAS);
 	return retval ? 0 : 1;
 #elif defined JOOMBA_2

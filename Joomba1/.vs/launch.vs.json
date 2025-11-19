@@ -3,11 +3,11 @@
   "defaults": {},
   "configurations": [
     {
-        "type": "default",
+        "type": "joomba1",
         "project": "CMakeLists.txt",
         "projectTarget": "Joomba1.exe",
         "name": "Joomba1.exe",
-        "args": [ "..\\..\\..\\testes_copia_local" ]
+        "args": [ "..\\..\\..\\testes_copia_local\\arq07.in" ]
     }
   ]
 }

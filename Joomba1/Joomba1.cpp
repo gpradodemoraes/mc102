@@ -5,7 +5,7 @@
 #include <fstream>
 #include "predio.h"
 
-void parse_entrada_joomba1(char* filepath, std::vector<instrucao>* instrucoes, int32_t *ANDARES_, int32_t *JANELAS_) {
+bool parse_entrada_joomba1(char* filepath, std::vector<instrucao>* instrucoes, int32_t *ANDARES_, int32_t *JANELAS_) {
 	std::ifstream file(filepath);
 	if (file.good() && file.is_open()) {
 		int32_t JANELAS = 0;
@@ -40,7 +40,9 @@ void parse_entrada_joomba1(char* filepath, std::vector<instrucao>* instrucoes, i
 		file.close();
 		*ANDARES_ = ANDARES;
 		*JANELAS_ = JANELAS;
+		return true;
 	}
+	return false;
 }
 bool processa_entrada_joomba_1(std::vector<instrucao>* instrucoes,
 	const int32_t ANDARES,
