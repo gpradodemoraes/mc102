@@ -1,14 +1,8 @@
-#include "Joomba2.h"
+﻿#include "Joomba2.h"
 
 #include <fstream>
 #include <sstream>
 #include <fmt/core.h>
-
-struct instrucao_node {
-    char direcao;
-	int32_t distancia;
-    instrucao_node* parent;
-};
 
 bool parse_entrada_joomba2(char* filepath,
 	std::vector<posicao>* posicoes,
@@ -62,5 +56,52 @@ bool parse_entrada_joomba2(char* filepath,
 		*COMANDOS_ = COMANDOS;
 		return true;
 	}
+	return false;
+}
+
+static void print_lista_instrucoes(instrucao_node* i) {
+	instrucao_node* n = i;
+	while (n != nullptr) {
+		fmt::println("direcao {}; distancia {}", n->direcao, n->direcao);
+		n = n->parent;
+	}
+}
+
+int32_t conta_instrucoes(instrucao_node* i) {
+	int32_t counter = 0;
+	if (i) {
+		if (i->direcao) counter = 1;
+		instrucao_node* last = i;
+		instrucao_node* node = i;
+		while (node->parent != nullptr) {
+			if(node->direcao != last->direcao) counter++;
+			last = node;
+			node = node->parent;
+		}
+		return counter;
+	}
+	return 0;
+}
+
+bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, predio* p) {
+	// Verificar se o prédio está limpo
+	if (!p) return false;
+	bool predio_esta_limpo = is_predio_limpo(p);
+
+	if (conta_instrucoes(list_instrucoes) > max_instrucoes_permitido) return false;
+	if (predio_esta_limpo) {
+		print_lista_instrucoes(list_instrucoes);
+		return true;
+	}
+	// salva o estado atual da janela
+	char current_janela_state = p->janelas_array[p->current_position];
+
+	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
+
+	if (pode_ir_para_baixo(p)) {
+		instrucao_node nova{'B', 1, list_instrucoes};
+		checar_limpeza(&nova, max_instrucoes_permitido, p);
+	}
+	
 	return false;
 }

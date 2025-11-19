@@ -1,4 +1,4 @@
-// --- By Gabriel ---
+﻿// --- By Gabriel ---
 
 #if defined JOOMBA_1
 #include "Joomba1.h"
@@ -34,6 +34,12 @@ int main(const int argc, char** argv) {
 				p->janelas_array[index] = '#';
 		}
 		print_predio(p);
+		instrucao_node root{'X', 0, nullptr};
+		if (checar_limpeza(&root, 1, p)) {
+			fmt::println("Comandos encontrados");
+		} else {
+			fmt::println("Comandos não encontrados");
+		}
 		destroi_predio(p);
 		return 0;
 	}

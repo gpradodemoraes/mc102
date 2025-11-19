@@ -87,3 +87,13 @@ int32_t convert_posicao_to_index(char face, int32_t andar, int32_t janela, predi
 	if (fator_multiplicador == -1) return -1;
 	return (fator_multiplicador * p->JANELAS + janela - 1) + (4 * p->JANELAS * andar);
 }
+
+bool is_predio_limpo(predio* p) {
+	if (p->janelas_array) {
+		for (int32_t i = 0;i < 4 * p->ANDARES * p->JANELAS;++i) {
+			if (p->janelas_array[i] == '#') return false;
+		}
+		return true;
+	}
+	return false;
+ }

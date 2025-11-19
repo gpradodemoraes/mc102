@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstdint>
 
 struct predio {
@@ -26,3 +26,5 @@ inline bool pode_ir_para_cima(predio *p) {
 
 // andar = 0..ANDARES-1 ; janela = 1..JANELAS
 int32_t convert_posicao_to_index(char face, int32_t andar, int32_t janela, predio* p);
+
+bool is_predio_limpo(predio* p);
