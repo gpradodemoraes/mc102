@@ -11,9 +11,9 @@ bool parse_entrada_joomba2(char* filepath,
 	int32_t *COMANDOS_) {
 	std::ifstream file(filepath);
 	if (file.good() && file.is_open()) {
-		int32_t JANELAS = 0;
-		int32_t ANDARES = 0;
-		int32_t COMANDOS = 0;
+		int32_t JANELAS = -1;
+		int32_t ANDARES = -1;
+		int32_t COMANDOS = -1;
 		std::string line;
 		while (getline(file, line)) {
 			fmt::println("|=>{}", line);
@@ -22,15 +22,15 @@ bool parse_entrada_joomba2(char* filepath,
 			posicao i{'X', -1, -1};
 			while (ss >> word) {
 				if(word.at(0) == 'F') break;
-				if (ANDARES == 0) {
+				if (ANDARES == -1) {
 					ANDARES = stoi(word);
 					continue;
 				}
-				if (JANELAS == 0) {
+				if (JANELAS == -1) {
 					JANELAS = stoi(word);
 					continue;
 				}
-				if (COMANDOS == 0) {
+				if (COMANDOS == -1) {
 					COMANDOS = stoi(word);
 					continue;
 				}
