@@ -3,8 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <fmt/core.h>
-#include <chrono>
-#include <thread>
 
 bool parse_entrada_joomba2(char* filepath,
 	std::vector<posicao>* posicoes,
@@ -106,7 +104,11 @@ static void print_caminho(instrucao_node* n, predio* p) {
 	posicoes.push_back(q->current_position);
 	while (!instrucoes.empty()) {
 		node = instrucoes.back();
-		fmt::println("DIRECAO: {}, DISTANCIA: {}, PROFUNDIDADE: {}", node->direcao, node->distancia, node->profundidade);
+		fmt::println("DIRECAO: {}, DISTANCIA: {}, PROFUNDIDADE: {}, COMANDOS: {}",
+			node->direcao,
+			node->distancia,
+			node->profundidade,
+			node->comandos);
 		switch (node->direcao) {
 		case 'E': move_esquerda(node->distancia, q); break;
 		case 'D': move_direita(node->distancia, q); break;
@@ -157,16 +159,16 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 
 	// Verificar se o prédio está limpo
 	bool predio_esta_limpo = is_predio_limpo(p);
-	int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
+	//int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
 
-	if (total_instrucoes > max_instrucoes_permitido) {
+	if (list_instrucoes->comandos > max_instrucoes_permitido) {
 		// restaura o status original dessa janela
 		p->janelas_array[current_position] = current_janela_state;
 		return false;
 	}
 	if (predio_esta_limpo) {
 		//print_lista_instrucoes(list_instrucoes);
-		fmt::println("total instrucoes: {}; máximo permitido: {}", total_instrucoes, max_instrucoes_permitido);
+		fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos, max_instrucoes_permitido);
 		print_caminho(list_instrucoes, p);
 		return true;
 	}
@@ -195,7 +197,10 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		case 'B':
 			if (pode_ir_para_baixo(p)) {
 				move_para_baixo(1, p, false);
-				instrucao_node nova{ 'B', 1, list_instrucoes->profundidade + 1, list_instrucoes };
+				instrucao_node nova{ proxima_direcao, 1,
+					list_instrucoes->profundidade + 1,
+					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+					list_instrucoes};
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
 			}
@@ -203,7 +208,10 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		case 'C':
 			if (pode_ir_para_cima(p)) {
 				move_para_cima(1, p, false);
-				instrucao_node nova{ 'C', 1, list_instrucoes->profundidade + 1, list_instrucoes };
+				instrucao_node nova{ proxima_direcao, 1,
+					list_instrucoes->profundidade + 1,
+					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+					list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
 			}
@@ -211,7 +219,10 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		case 'E':
 			if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
 				move_esquerda(1, p, false);
-				instrucao_node nova{ 'E', 1, list_instrucoes->profundidade + 1, list_instrucoes };
+				instrucao_node nova{ proxima_direcao, 1,
+					list_instrucoes->profundidade + 1,
+					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+					list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
 			}
@@ -219,7 +230,10 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		case 'D':
 			if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
 				move_direita(1, p, false);
-				instrucao_node nova{ 'D', 1, list_instrucoes->profundidade + 1, list_instrucoes };
+				instrucao_node nova{ proxima_direcao, 1,
+					list_instrucoes->profundidade + 1,
+					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+					list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
 			}
