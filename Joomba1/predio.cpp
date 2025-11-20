@@ -18,38 +18,42 @@ void print_predio(predio *p) {
 		fmt::println("");
 	}
 }
-void move_direita(int32_t posicoes, predio* p) {
+void move_direita(int32_t posicoes, predio* p, bool marca_posicao_final) {
 	for (int32_t i = 0; i < posicoes; ++i) {
 		p->janelas_array[p->current_position] = '.';
 		if ((p->current_position + 1) % (p->JANELAS * 4) == 0) {
 			p->current_position -= (p->JANELAS * 4 - 1);
 		} else p->current_position++;
-		p->janelas_array[p->current_position] = 'R';
+		if(marca_posicao_final)
+			p->janelas_array[p->current_position] = 'R';
 	}
 }
-void move_esquerda(int32_t posicoes, predio* p) {
+void move_esquerda(int32_t posicoes, predio* p, bool marca_posicao_final) {
 	for (int32_t i = 0; i < posicoes; ++i) {
 		p->janelas_array[p->current_position] = '.';
 		if (p->current_position % (p->JANELAS * 4) == 0) {
 			p->current_position += (p->JANELAS * 4 - 1);
 		} else p->current_position--;
-		p->janelas_array[p->current_position] = 'R';
+		if(marca_posicao_final)
+			p->janelas_array[p->current_position] = 'R';
 	}
 }
-void move_para_cima(int32_t posicoes, predio* p) {
+void move_para_cima(int32_t posicoes, predio* p, bool marca_posicao_final) {
 	for (int32_t i = 0; i < posicoes; ++i)
 		if (pode_ir_para_cima(p)) {
 			p->janelas_array[p->current_position] = '.';
 			p->current_position += 4 * p->JANELAS;
-			p->janelas_array[p->current_position] = 'R';
+			if(marca_posicao_final)
+				p->janelas_array[p->current_position] = 'R';
 		}
 }
-void move_para_baixo(int32_t posicoes, predio* p) {
+void move_para_baixo(int32_t posicoes, predio* p, bool marca_posicao_final) {
 	for (int32_t i = 0; i < posicoes; ++i)
 		if (pode_ir_para_baixo(p)) {
 			p->janelas_array[p->current_position] = '.';
 			p->current_position -= 4 * p->JANELAS;
-			p->janelas_array[p->current_position] = 'R';
+			if(marca_posicao_final)
+				p->janelas_array[p->current_position] = 'R';
 		}
 }
 

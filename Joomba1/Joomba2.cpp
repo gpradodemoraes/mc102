@@ -115,7 +115,7 @@ static void print_caminho(instrucao_node* n, predio* p) {
 		instrucoes.pop_back();
 	}
 	for (int32_t i : posicoes) q->janelas_array[i] = 'X';
-	fmt::println("TENTATIVA DE PRINTAR O CAMINHO QUE FOI FEITO!");
+	fmt::println("Total de comandos: {}", conta_instrucoes(n));
 	print_predio(q);
 	destroi_predio(q);
 }
@@ -143,23 +143,33 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	// Verificar se o prédio está limpo
 	if (!p) return false;
 	//print_predio(p);
-	bool predio_esta_limpo = is_predio_limpo(p);
-
-	if (conta_instrucoes(list_instrucoes) > max_instrucoes_permitido) return false;
-	if (predio_esta_limpo) {
-		print_lista_instrucoes(list_instrucoes);
-		print_caminho(list_instrucoes, p);
-		return true;
-	}
-	// salva o estado atual da janela
+	//print_caminho(list_instrucoes, p);
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
 	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
 
+	bool predio_esta_limpo = is_predio_limpo(p);
+	int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
+
+	if (total_instrucoes > max_instrucoes_permitido) {
+		// restaura o status original dessa janela
+		p->janelas_array[current_position] = current_janela_state;
+		return false;
+	}
+	if (predio_esta_limpo) {
+		//print_lista_instrucoes(list_instrucoes);
+		fmt::println("total instrucoes: {}; máximo permitido: {}", total_instrucoes, max_instrucoes_permitido);
+		print_caminho(list_instrucoes, p);
+		return true;
+	}
+	// salva o estado atual da janela
+
 
 	char minhas_direcoes[] = { 'C', 'B', 'E', 'D' };
 	char proxima_direcao = '\0';
+	bool run_again;
 	do {
+		run_again = false;
 		char sugestao = alterar_as_direcoes_para_evitar_lock();
 		proxima_direcao = '\0';
 		for (int32_t i = 0; i < 4; i++) {
@@ -172,7 +182,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		switch (proxima_direcao) {
 		case 'B':
 			if (pode_ir_para_baixo(p)) {
-				move_para_baixo(1, p);
+				move_para_baixo(1, p, false);
 				instrucao_node nova{ 'B', 1, list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
@@ -180,7 +190,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 			break;
 		case 'C':
 			if (pode_ir_para_cima(p)) {
-				move_para_cima(1, p);
+				move_para_cima(1, p, false);
 				instrucao_node nova{ 'C', 1, list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
@@ -188,7 +198,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 			break;
 		case 'E':
 			if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
-				move_esquerda(1, p);
+				move_esquerda(1, p, false);
 				instrucao_node nova{ 'E', 1, list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
@@ -196,16 +206,18 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 			break;
 		case 'D':
 			if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
-				move_direita(1, p);
+				move_direita(1, p, false);
 				instrucao_node nova{ 'D', 1, list_instrucoes };
 				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 				p->current_position = current_position;
 			}
 			break;
 		default:
+			// ver se ainda temos uma direção para gastar
+			for (int32_t i = 0; i < 4; i++) if (minhas_direcoes[i]) run_again = true;
 			break;
 		}
-	} while (proxima_direcao);
+	} while (run_again || proxima_direcao);
 
 
 

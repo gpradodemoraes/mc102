@@ -10,10 +10,10 @@ struct predio {
 
 void print_predio(predio *p);
 
-void move_direita(int32_t posicoes, predio* p);
-void move_esquerda(int32_t posicoes, predio* p);
-void move_para_cima(int32_t posicoes, predio* p);
-void move_para_baixo(int32_t posicoes, predio* p);
+void move_direita(int32_t posicoes, predio* p, bool marca_posicao_final = true);
+void move_esquerda(int32_t posicoes, predio* p, bool marca_posicao_final = true);
+void move_para_cima(int32_t posicoes, predio* p, bool marca_posicao_final = true);
+void move_para_baixo(int32_t posicoes, predio* p, bool marca_posicao_final = true);
 predio* constroi_predio(int32_t ANDARES, int32_t JANELAS);
 void destroi_predio(predio* p);
 
