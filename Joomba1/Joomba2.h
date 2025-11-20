@@ -14,6 +14,7 @@ struct posicao {
 struct instrucao_node {
 	char direcao;
 	int32_t distancia;
+	int32_t profundidade;
 	instrucao_node* parent;
 };
 

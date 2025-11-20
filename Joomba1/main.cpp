@@ -34,7 +34,7 @@ int main(const int argc, char** argv) {
 				p->janelas_array[index] = '#';
 		}
 		print_predio(p);
-		instrucao_node root{'X', 0, nullptr};
+		instrucao_node root{'X', 0, 0, nullptr};
 		if (checar_limpeza(&root, COMANDOS, p)) {
 			fmt::println("Comandos encontrados");
 		} else {
