@@ -4,6 +4,8 @@
 #include <sstream>
 #include <fmt/core.h>
 
+static char* predio_auxiliar;
+
 bool parse_entrada_joomba2(char* filepath,
 	std::vector<posicao>* posicoes,
 	int32_t *ANDARES_,
@@ -84,6 +86,17 @@ int32_t conta_instrucoes(instrucao_node* i) {
 }
 
 
+void inicia_predio_auxiliar(predio* p) {
+	predio_auxiliar = (char*) malloc(p->ANDARES * p->JANELAS * 4);
+	if(predio_auxiliar)
+		memset(predio_auxiliar, 0, p->ANDARES * p->JANELAS * 4);
+}
+
+void destroi_predio_auxiliar() {
+	free(predio_auxiliar);
+
+}
+
 /********
 COMBINAR O PRINT_PREDIO COM AS INSTRUCOES
 PARA DESENHAR O CAMINHO QUE ELE SUPOSTAMENTE TENTOU FAZER
@@ -151,12 +164,15 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	//print_predio(p);
 	//print_caminho(list_instrucoes, p);
 
-		
+	// se essa posicão já foi visitada, então retornar falso poi
+	// com certeza existe um caminho melhor!
+	if (predio_auxiliar[p->current_position] == 1) return false;
+
 
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
 	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
-
+	predio_auxiliar[p->current_position] = 1; // marcar como visitado
 	// Verificar se o prédio está limpo
 	bool predio_esta_limpo = is_predio_limpo(p);
 	//int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
@@ -175,77 +191,50 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	// salva o estado atual da janela
 
 
-	char minhas_direcoes[] = { 'C', 'D', 'B', 'E' };
-	char proxima_direcao = '\0';
-	bool run_again;
-	do {
-		run_again = false;
-		char sugestao = alterar_as_direcoes_para_evitar_lock();
-		proxima_direcao = '\0';
-		for (int32_t i = 0; i < 4; i++) {
-			if (sugestao == minhas_direcoes[i]) {
-				proxima_direcao = sugestao;
-				minhas_direcoes[i] = '\0';
-				break;
-			}
-		}
-		//fmt::println("PROFUNDIDADE({}): {}", proxima_direcao, list_instrucoes->profundidade);
-		//print_caminho(list_instrucoes, p);
-		//getch();
-		//std::this_thread::sleep_for(std::chrono::milliseconds(50));
-		switch (proxima_direcao) {
-		case 'B':
-			if (pode_ir_para_baixo(p)) {
-				move_para_baixo(1, p, false);
-				instrucao_node nova{ proxima_direcao, 1,
-					list_instrucoes->profundidade + 1,
-					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-					list_instrucoes};
-				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-				p->current_position = current_position;
-			}
-			break;
-		case 'C':
-			if (pode_ir_para_cima(p)) {
-				move_para_cima(1, p, false);
-				instrucao_node nova{ proxima_direcao, 1,
-					list_instrucoes->profundidade + 1,
-					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-					list_instrucoes };
-				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-				p->current_position = current_position;
-			}
-			break;
-		case 'E':
-			if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
-				move_esquerda(1, p, false);
-				instrucao_node nova{ proxima_direcao, 1,
-					list_instrucoes->profundidade + 1,
-					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-					list_instrucoes };
-				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-				p->current_position = current_position;
-			}
-			break;
-		case 'D':
-			if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
-				move_direita(1, p, false);
-				instrucao_node nova{ proxima_direcao, 1,
-					list_instrucoes->profundidade + 1,
-					list_instrucoes->direcao == proxima_direcao ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-					list_instrucoes };
-				if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-				p->current_position = current_position;
-			}
-			break;
-		default:
-			// ver se ainda temos uma direção para gastar
-			for (int32_t i = 0; i < 4; i++) if (minhas_direcoes[i]) run_again = true;
-			break;
-		}
-	} while (run_again || proxima_direcao);
-
-
+	//fmt::println("PROFUNDIDADE({}): {}", proxima_direcao, list_instrucoes->profundidade);
+	//print_caminho(list_instrucoes, p);
+	//getch();
+	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	if (pode_ir_para_baixo(p)) {
+		move_para_baixo(1, p, false);
+		instrucao_node nova{ 'B', 1,
+			list_instrucoes->profundidade + 1,
+			list_instrucoes->direcao == 'B' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+			list_instrucoes};
+		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+		predio_auxiliar[p->current_position] = 0;
+		p->current_position = current_position;
+	}
+	if (pode_ir_para_cima(p)) {
+		move_para_cima(1, p, false);
+		instrucao_node nova{ 'C', 1,
+			list_instrucoes->profundidade + 1,
+			list_instrucoes->direcao == 'C' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+			list_instrucoes };
+		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+		predio_auxiliar[p->current_position] = 0;
+		p->current_position = current_position;
+	}
+	if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
+		move_esquerda(1, p, false);
+		instrucao_node nova{ 'E', 1,
+			list_instrucoes->profundidade + 1,
+			list_instrucoes->direcao == 'E' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+			list_instrucoes };
+		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+		predio_auxiliar[p->current_position] = 0;
+		p->current_position = current_position;
+	}
+	if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
+		move_direita(1, p, false);
+		instrucao_node nova{ 'D', 1,
+			list_instrucoes->profundidade + 1,
+			list_instrucoes->direcao == 'D' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+			list_instrucoes };
+		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+		predio_auxiliar[p->current_position] = 0;
+		p->current_position = current_position;
+	}
 
 
 	// como as quatro faces do prédio formam um círculo

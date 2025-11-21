@@ -22,6 +22,7 @@ int main(const int argc, char** argv) {
 #elif defined JOOMBA_2
 	std::vector<posicao> posicoes;
 	int32_t ANDARES, JANELAS, COMANDOS;
+	fmt::println("==>{}", argv[1]);
 	if (parse_entrada_joomba2(argv[1], &posicoes, &ANDARES, &JANELAS, &COMANDOS)) {
 		predio* p = constroi_predio(ANDARES, JANELAS);
 		if (p == NULL) return 1;
@@ -34,6 +35,7 @@ int main(const int argc, char** argv) {
 				p->janelas_array[index] = '#';
 		}
 		print_predio(p);
+		inicia_predio_auxiliar(p);
 		instrucao_node root{'X', 0, 0, 0, nullptr};
 		if (checar_limpeza(&root, COMANDOS, p)) {
 			fmt::println("Comandos encontrados");
@@ -41,6 +43,7 @@ int main(const int argc, char** argv) {
 			fmt::println("Comandos não encontrados");
 		}
 		destroi_predio(p);
+		destroi_predio_auxiliar();
 		return 0;
 	}
 	return 1;
