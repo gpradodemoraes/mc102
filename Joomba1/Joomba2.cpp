@@ -87,9 +87,9 @@ int32_t conta_instrucoes(instrucao_node* i) {
 
 
 void inicia_predio_auxiliar(predio* p) {
-	predio_auxiliar = (char*) malloc(p->ANDARES * p->JANELAS * 4);
+	predio_auxiliar = (char*)malloc(static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
 	if(predio_auxiliar)
-		memset(predio_auxiliar, 0, p->ANDARES * p->JANELAS * 4);
+		memset(predio_auxiliar, 0, static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
 }
 
 void destroi_predio_auxiliar() {
@@ -113,7 +113,7 @@ static void print_caminho(instrucao_node* n, predio* p) {
 		node = node->parent;
 	}
 	//memset(q->janelas_array, '.', q->ANDARES * q->JANELAS * 4);
-	memcpy(q->janelas_array, p->janelas_array, q->ANDARES * q->JANELAS * 4);
+	memcpy(q->janelas_array, p->janelas_array, static_cast<size_t>(q->ANDARES) * q->JANELAS * 4);
 	posicoes.push_back(q->current_position);
 	while (!instrucoes.empty()) {
 		node = instrucoes.back();
