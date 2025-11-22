@@ -6,11 +6,8 @@
 
 static char* predio_auxiliar;
 
-bool parse_entrada_joomba2(char* filepath,
-	std::vector<posicao>* posicoes,
-	int32_t *ANDARES_,
-	int32_t *JANELAS_,
-	int32_t *COMANDOS_) {
+bool parse_entrada_joomba2(char* filepath, std::vector<posicao>* posicoes, int32_t* ANDARES_, int32_t* JANELAS_,
+  int32_t* COMANDOS_) {
 	std::ifstream file(filepath);
 	if (file.good() && file.is_open()) {
 		int32_t JANELAS = -1;
@@ -21,9 +18,9 @@ bool parse_entrada_joomba2(char* filepath,
 			fmt::println("|=>{}", line);
 			std::stringstream ss(line);
 			std::string word;
-			posicao i{'X', -1, -1};
+			posicao i{ 'X', -1, -1 };
 			while (ss >> word) {
-				if(word.at(0) == 'F') break;
+				if (word.at(0) == 'F') break;
 				if (ANDARES == -1) {
 					ANDARES = stoi(word);
 					continue;
@@ -76,7 +73,7 @@ int32_t conta_instrucoes(instrucao_node* i) {
 		instrucao_node* last = i;
 		instrucao_node* node = i;
 		while (node->parent != nullptr) {
-			if(node->direcao != last->direcao) counter++;
+			if (node->direcao != last->direcao) counter++;
 			last = node;
 			node = node->parent;
 		}
@@ -88,13 +85,11 @@ int32_t conta_instrucoes(instrucao_node* i) {
 
 void inicia_predio_auxiliar(predio* p) {
 	predio_auxiliar = (char*)malloc(static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
-	if(predio_auxiliar)
-		memset(predio_auxiliar, 0, static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
+	if (predio_auxiliar) memset(predio_auxiliar, 0, static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
 }
 
 void destroi_predio_auxiliar() {
 	free(predio_auxiliar);
-
 }
 
 /********
@@ -117,11 +112,8 @@ static void print_caminho(instrucao_node* n, predio* p) {
 	posicoes.push_back(q->current_position);
 	while (!instrucoes.empty()) {
 		node = instrucoes.back();
-		fmt::println("DIRECAO: {}, DISTANCIA: {}, PROFUNDIDADE: {}, COMANDOS: {}",
-			node->direcao,
-			node->distancia,
-			node->profundidade,
-			node->comandos);
+		fmt::println("DIRECAO: {}, DISTANCIA: {}, PROFUNDIDADE: {}, COMANDOS: {}", node->direcao, node->distancia,
+		  node->profundidade, node->comandos);
 		switch (node->direcao) {
 		case 'E': move_esquerda(node->distancia, q); break;
 		case 'D': move_direita(node->distancia, q); break;
@@ -141,7 +133,7 @@ static void print_caminho(instrucao_node* n, predio* p) {
 
 static char alterar_as_direcoes_para_evitar_lock() {
 	static int32_t index = 0;
-	static char direcoes[] = {'B', 'D', 'C', 'E'};
+	static char direcoes[] = { 'B', 'D', 'C', 'E' };
 	return direcoes[index++ % 4];
 }
 static int32_t conta_lista_consecutiva_de_direcao(const char direcao, instrucao_node* lista) {
@@ -153,7 +145,7 @@ static int32_t conta_lista_consecutiva_de_direcao(const char direcao, instrucao_
 			node = node->parent;
 			continue;
 		}
-		break;		
+		break;
 	}
 	return counter;
 }
@@ -172,7 +164,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
 	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
-	predio_auxiliar[p->current_position] = 1; // marcar como visitado
+	predio_auxiliar[p->current_position] = 1;	 // marcar como visitado
 	// Verificar se o prédio está limpo
 	bool predio_esta_limpo = is_predio_limpo(p);
 	//int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
@@ -197,18 +189,16 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	if (pode_ir_para_baixo(p)) {
 		move_para_baixo(1, p, false);
-		instrucao_node nova{ 'B', 1,
-			list_instrucoes->profundidade + 1,
+		instrucao_node nova{ 'B', 1, list_instrucoes->profundidade + 1,
 			list_instrucoes->direcao == 'B' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-			list_instrucoes};
+			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 		predio_auxiliar[p->current_position] = 0;
 		p->current_position = current_position;
 	}
 	if (pode_ir_para_cima(p)) {
 		move_para_cima(1, p, false);
-		instrucao_node nova{ 'C', 1,
-			list_instrucoes->profundidade + 1,
+		instrucao_node nova{ 'C', 1, list_instrucoes->profundidade + 1,
 			list_instrucoes->direcao == 'C' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
 			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
@@ -217,8 +207,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	}
 	if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
 		move_esquerda(1, p, false);
-		instrucao_node nova{ 'E', 1,
-			list_instrucoes->profundidade + 1,
+		instrucao_node nova{ 'E', 1, list_instrucoes->profundidade + 1,
 			list_instrucoes->direcao == 'E' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
 			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
@@ -227,8 +216,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	}
 	if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
 		move_direita(1, p, false);
-		instrucao_node nova{ 'D', 1,
-			list_instrucoes->profundidade + 1,
+		instrucao_node nova{ 'D', 1, list_instrucoes->profundidade + 1,
 			list_instrucoes->direcao == 'D' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
 			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
