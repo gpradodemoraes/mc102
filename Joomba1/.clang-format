@@ -1,0 +1,20 @@
+# Format Style Options - Created with Clang Power Tools
+---
+BasedOnStyle: Google
+AlignAfterOpenBracket: DontAlign
+AllowAllArgumentsOnNextLine: false
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: None
+ColumnLimit: 120
+ContinuationIndentWidth: 2
+Cpp11BracedListStyle: false
+IncludeBlocks: Preserve
+IndentCaseLabels: false
+IndentWidth: 4
+MaxEmptyLinesToKeep: 3
+ReflowComments: false
+SortIncludes: false
+SpacesBeforeTrailingComments: 1
+TabWidth: 4
+UseTab: Always
+...
