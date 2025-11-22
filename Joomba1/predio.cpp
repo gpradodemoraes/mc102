@@ -130,7 +130,7 @@ int32_t calcula_passos_horizontais(int32_t inicio, int32_t fim, predio* p) {
 	int32_t distancia = MIN(diff, p->JANELAS * 4 - diff);
 
 	if (janela_inicio < janela_fim) {
-		if (janela_inicio + distancia == janela_inicio) return distancia;
+		if (janela_inicio + distancia == janela_fim) return distancia;
 		return -1 * distancia;
 	}
 

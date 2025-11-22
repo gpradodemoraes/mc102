@@ -82,6 +82,25 @@ int32_t conta_instrucoes(instrucao_node* i) {
 	return 0;
 }
 
+static int32_t procura_janela_mais_proxima(int32_t janela_corrente, predio* p) {
+	double menor_distancia = std::numeric_limits<double>::max();
+	int32_t retval = -1;
+	if (p->janelas_array) {
+		for (int32_t i = 0; i < 4 * p->ANDARES * p->JANELAS; ++i) {
+			if (p->janelas_array[i] == '#') {
+				// achamos uma janela suja vamos calcular sua distancia
+				int32_t vertical = calcula_passos_verticais(janela_corrente, i, p);
+				int32_t horizontal = calcula_passos_horizontais(janela_corrente, i, p);
+				double distancia = sqrt(pow(vertical, 2) + pow(horizontal, 2));
+				if (distancia < menor_distancia) {
+					menor_distancia = distancia;
+					retval = i;
+				}
+			}
+		}
+	}
+	return retval;
+}
 
 void inicia_predio_auxiliar(predio* p) {
 	predio_auxiliar = (char*)malloc(static_cast<size_t>(p->ANDARES) * p->JANELAS * 4);
@@ -158,7 +177,9 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 
 	// se essa posicão já foi visitada, então retornar falso poi
 	// com certeza existe um caminho melhor!
-	if (predio_auxiliar[p->current_position] == 1) return false;
+
+
+	//if (predio_auxiliar[p->current_position] == 1) return false;
 
 
 	char current_janela_state = p->janelas_array[p->current_position];
@@ -184,52 +205,53 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 
 
 	//fmt::println("PROFUNDIDADE({}): {}", proxima_direcao, list_instrucoes->profundidade);
-	//print_caminho(list_instrucoes, p);
+	print_caminho(list_instrucoes, p);
 	//getch();
-	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
-	if (pode_ir_para_baixo(p)) {
-		move_para_baixo(1, p, false);
-		instrucao_node nova{ 'B', 1, list_instrucoes->profundidade + 1,
-			list_instrucoes->direcao == 'B' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+
+	int32_t janela_suja_mais_proxima = procura_janela_mais_proxima(current_position, p);
+
+	int32_t passos_horizontais = calcula_passos_horizontais(current_position, janela_suja_mais_proxima, p);
+
+	if (passos_horizontais > 0) {
+		move_direita(passos_horizontais, p, false);
+		instrucao_node nova{ 'D', passos_horizontais, list_instrucoes->profundidade + 1,
+			list_instrucoes->direcao == 'D' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
 			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 		predio_auxiliar[p->current_position] = 0;
 		p->current_position = current_position;
-	}
-	if (pode_ir_para_cima(p)) {
-		move_para_cima(1, p, false);
-		instrucao_node nova{ 'C', 1, list_instrucoes->profundidade + 1,
-			list_instrucoes->direcao == 'C' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-			list_instrucoes };
-		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-		predio_auxiliar[p->current_position] = 0;
-		p->current_position = current_position;
-	}
-	if (conta_lista_consecutiva_de_direcao('E', list_instrucoes) < (4 * p->JANELAS / 2)) {
-		move_esquerda(1, p, false);
-		instrucao_node nova{ 'E', 1, list_instrucoes->profundidade + 1,
+	} else if (passos_horizontais < 0) {
+		move_esquerda(-1 * passos_horizontais, p, false);
+		instrucao_node nova{ 'E', -1 * passos_horizontais, list_instrucoes->profundidade + 1,
 			list_instrucoes->direcao == 'E' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
 			list_instrucoes };
 		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
 		predio_auxiliar[p->current_position] = 0;
 		p->current_position = current_position;
 	}
-	if (conta_lista_consecutiva_de_direcao('D', list_instrucoes) < (4 * p->JANELAS / 2)) {
-		move_direita(1, p, false);
-		instrucao_node nova{ 'D', 1, list_instrucoes->profundidade + 1,
-			list_instrucoes->direcao == 'D' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
-			list_instrucoes };
-		if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
-		predio_auxiliar[p->current_position] = 0;
-		p->current_position = current_position;
+	int32_t passos_verticais = calcula_passos_verticais(current_position, janela_suja_mais_proxima, p);
+
+	if (passos_verticais > 0) {
+		if (pode_ir_para_cima(p)) {
+			move_para_cima(passos_verticais, p, false);
+			instrucao_node nova{ 'C', passos_verticais, list_instrucoes->profundidade + 1,
+				list_instrucoes->direcao == 'C' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+				list_instrucoes };
+			if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+			predio_auxiliar[p->current_position] = 0;
+			p->current_position = current_position;
+		}
+	} else if(passos_verticais < 0) {
+		if (pode_ir_para_baixo(p)) {
+			move_para_baixo(-1 * passos_verticais, p, false);
+			instrucao_node nova{ 'B', -1 * passos_verticais, list_instrucoes->profundidade + 1,
+				list_instrucoes->direcao == 'B' ? list_instrucoes->comandos : list_instrucoes->comandos + 1,
+				list_instrucoes };
+			if (checar_limpeza(&nova, max_instrucoes_permitido, p)) return true;
+			predio_auxiliar[p->current_position] = 0;
+			p->current_position = current_position;
+		}
 	}
-
-
-	// como as quatro faces do prédio formam um círculo
-	// é preciso andar no máximo metade das janelas para a esquerda ou direita
-	// para se chegar a qualquer lugar
-
-
 
 	// ele já tentou todas as direções possíveis. Então restaurar o valor da janela corrente
 	p->janelas_array[current_position] = current_janela_state;
