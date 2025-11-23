@@ -32,7 +32,7 @@ int main(const int argc, char** argv) {
 	// 	fmt::println("\n-------------");
 	// }
 	// destroy_all_permutations();
-	// 
+	//
 	// return 0;
 
 	std::vector<posicao> posicoes;
@@ -52,26 +52,27 @@ int main(const int argc, char** argv) {
 				quantidade_janelas_sujas++;
 			}
 		}
-		//print_predio(p);
+		// print_predio(p);
 		inicia_predio_auxiliar(p);
 		int32_t* janelas_sujas = (int32_t*)malloc(sizeof(int32_t) * quantidade_janelas_sujas);
 		int32_t counter = 0;
-		if (janelas_sujas)
-			for (int32_t i =0; i< array_size; ++i) 
-				if (p->janelas_array[i] == '#')
-					janelas_sujas[counter++] = i;
+
+		for (int32_t i = 0; i < array_size; ++i)
+			if (p->janelas_array[i] == '#')
+				if (janelas_sujas && counter < quantidade_janelas_sujas) janelas_sujas[counter++] = i;
 
 
-		int32_t* inicio_ponteiro_com_todas_as_permutacoes = prepare_all_permutation(janelas_sujas, quantidade_janelas_sujas);
+		int32_t* inicio_ponteiro_com_todas_as_permutacoes =
+		  prepare_all_permutation(janelas_sujas, quantidade_janelas_sujas);
 
 		if (procura_comandos_sem_recorrencia(inicio_ponteiro_com_todas_as_permutacoes, p, COMANDOS)) {
 			fmt::println("Comandos encontrados");
 		} else {
 			fmt::println("Comandos não encontrados");
 		}
-		// 
-		//instrucao_node root{'X', 0, 0, 0, nullptr};
-		//if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, p)) {
+		//
+		// instrucao_node root{'X', 0, 0, 0, nullptr};
+		// if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, p)) {
 		//	fmt::println("Comandos encontrados");
 		//} else {
 		//	fmt::println("Comandos não encontrados");

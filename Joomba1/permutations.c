@@ -11,7 +11,7 @@ static int32_t original_array_size;
 
 
 
-/* Function to swap values at 
+/* Function to swap values at
    two pointers */
 static void swap(int32_t* x, int32_t* y) {
 	int32_t temp;
@@ -20,11 +20,11 @@ static void swap(int32_t* x, int32_t* y) {
 	*y = temp;
 }
 
-/* Function to print permutations 
-   of string 
-   This function takes three parameters: 
-   1. String 
-   2. Starting index of the string 
+/* Function to print permutations
+   of string
+   This function takes three parameters:
+   1. String
+   2. Starting index of the string
    3. Ending index of the string. */
 static void permute(int32_t* a, int32_t l, int32_t r) {
 	int32_t i;
@@ -34,8 +34,8 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 			all_permutations[full_permutation_index] = a[j];
 			full_permutation_index++;
 		}
-		//full_permutation_index--;
-		//full_permutation_index += original_array_size + 1;
+		// full_permutation_index--;
+		// full_permutation_index += original_array_size + 1;
 		all_permutations[full_permutation_index] = -1;
 		full_permutation_index++;
 	} else {
@@ -43,7 +43,7 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 			swap((a + l), (a + i));
 			permute(a, l + 1, r);
 
-			//backtrack
+			// backtrack
 			swap((a + l), (a + i));
 		}
 	}
@@ -58,18 +58,14 @@ int32_t* prepare_all_permutation(int32_t* array_model, size_t size) {
 	all_permutations = (int32_t*)malloc(sizeof(int32_t) * (amount_of_permutations * (size + 1) + 1));
 
 	permute(array_model, 0, size - 1);
-	all_permutations[amount_of_permutations * (size + 1)] = -2;
+	if (all_permutations) all_permutations[amount_of_permutations * (size + 1)] = -2;
 
 	return all_permutations;
 }
 
-void destroy_all_permutations() {
-	free(all_permutations);
-}
+void destroy_all_permutations() { free(all_permutations); }
 
-int32_t* get_next_permutation() {
-	return all_permutations + current_index++ * original_array_size;
-}
+int32_t* get_next_permutation() { return all_permutations + current_index++ * original_array_size; }
 
 // Driver code
 // int main() {

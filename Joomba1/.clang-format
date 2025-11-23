@@ -13,7 +13,7 @@ IncludeBlocks: Preserve
 IndentCaseLabels: true
 IndentWidth: 4
 MaxEmptyLinesToKeep: 3
-ReflowComments: Always
+ReflowComments: true
 SortIncludes: false
 SpacesBeforeTrailingComments: 1
 TabWidth: 4
