@@ -36,7 +36,7 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 		}
 		//full_permutation_index--;
 		//full_permutation_index += original_array_size + 1;
-		all_permutations[full_permutation_index] = 300;
+		all_permutations[full_permutation_index] = -1;
 		full_permutation_index++;
 	} else {
 		for (i = l; i <= r; i++) {
@@ -52,11 +52,13 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 int32_t* prepare_all_permutation(int32_t* array_model, size_t size) {
 	original_array_size = size;
 	uint32_t amount_of_permutations = 1;
-	
+
 	for (int32_t i = 1; i <= size; ++i) amount_of_permutations *= i;
-	all_permutations = (int32_t*) malloc(sizeof(int32_t) * amount_of_permutations * (size + 1));
+
+	all_permutations = (int32_t*)malloc(sizeof(int32_t) * (amount_of_permutations * (size + 1) + 1));
 
 	permute(array_model, 0, size - 1);
+	all_permutations[amount_of_permutations * (size + 1)] = -2;
 
 	return all_permutations;
 }
