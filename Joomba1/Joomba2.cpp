@@ -283,3 +283,86 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	// e retornar falso, pois se todas as direçoes falharam então não tem solução
 	return false;
 }
+
+static void free_instrucoes_nodes(instrucao_node* latest_node) {
+	instrucao_node* node = latest_node;
+	instrucao_node* delete_node;
+	while (node) {
+		delete_node = node;
+		node = node->parent;
+		free(delete_node);
+	}
+}
+
+bool procura_comandos_sem_recorrencia(int32_t* array_all_permutations, predio *p, const int32_t maximo_comandos) {
+	char* backup = (char*)malloc(sizeof(char) * 4 * p->ANDARES * p->JANELAS);
+	memcpy(backup, p->janelas_array, sizeof(char) * 4 * p->ANDARES * p->JANELAS);
+	int32_t counter = 0;
+	while (true) {
+		if (array_all_permutations[counter] == -2) {
+			fmt::println("Comandos não encontrados");
+			free(backup);
+			return false;
+		}
+		memcpy(p->janelas_array, backup, sizeof(char) * 4 * p->ANDARES * p->JANELAS);
+		//int32_t current_position = 0;
+		p->current_position = 0;
+		p->janelas_array[p->current_position] = 'R';
+		instrucao_node* latest_node = create_instrucao_node('X', 0, 0, 0, nullptr);
+		while (true) {
+			int32_t janela = array_all_permutations[counter];
+			if (janela == -1) break;
+			int32_t passos_horizontais = calcula_passos_horizontais(p->current_position, janela, p);
+
+			if (passos_horizontais > 0) {
+				move_direita(passos_horizontais, p, true);
+				latest_node = create_instrucao_node('D', passos_horizontais, latest_node->profundidade + 1,
+				  latest_node->direcao == 'D' ? latest_node->comandos : latest_node->comandos + 1, latest_node);
+			} else if (passos_horizontais < 0) {
+				move_esquerda(-1 * passos_horizontais, p, true);
+				latest_node = create_instrucao_node('E', -1 * passos_horizontais, latest_node->profundidade + 1,
+				  latest_node->direcao == 'E' ? latest_node->comandos : latest_node->comandos + 1, latest_node);
+			}
+			// print_predio(p);
+			// fmt::println("\n=======================");
+			p->janelas_array[p->current_position] = '.';
+			int32_t passos_verticais = calcula_passos_verticais(p->current_position, janela, p);
+
+			if (passos_verticais > 0) {
+				if (pode_ir_para_cima(p)) {
+					move_para_cima(passos_verticais, p, true);
+					latest_node = create_instrucao_node('C', passos_verticais, latest_node->profundidade + 1,
+					  latest_node->direcao == 'C' ? latest_node->comandos : latest_node->comandos + 1, latest_node);
+				}
+			} else if (passos_verticais < 0) {
+				if (pode_ir_para_baixo(p)) {
+					move_para_baixo(-1 * passos_verticais, p, true);
+					latest_node = create_instrucao_node('B', -1 * passos_verticais, latest_node->profundidade + 1,
+					  latest_node->direcao == 'B' ? latest_node->comandos : latest_node->comandos + 1, latest_node);
+				}
+			}
+			// print_predio(p);
+			// fmt::println("\n=======================");
+			p->janelas_array[p->current_position] = '.';
+
+			bool comandos_ok = conta_instrucoes(latest_node) <= maximo_comandos;
+			if (is_predio_limpo(p) && comandos_ok) {
+				print_predio(p);
+				print_caminho(latest_node, p);
+				fmt::println("Comandos encontrados");
+				free_instrucoes_nodes(latest_node);
+				free(backup);
+				return true;
+			}
+			if (!comandos_ok) {
+				free_instrucoes_nodes(latest_node);
+				break;
+			}
+			counter++;
+		}
+
+		//if (list_instrucoes->comandos > max_instrucoes_permitido) {
+		while (array_all_permutations[counter] != -1) counter++;
+		counter++;
+	}
+}
