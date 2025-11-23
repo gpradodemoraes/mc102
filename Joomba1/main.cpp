@@ -52,7 +52,7 @@ int main(const int argc, char** argv) {
 				quantidade_janelas_sujas++;
 			}
 		}
-		print_predio(p);
+		//print_predio(p);
 		inicia_predio_auxiliar(p);
 		int32_t* janelas_sujas = (int32_t*)malloc(sizeof(int32_t) * quantidade_janelas_sujas);
 		int32_t counter = 0;
@@ -64,7 +64,12 @@ int main(const int argc, char** argv) {
 
 		int32_t* inicio_ponteiro_com_todas_as_permutacoes = prepare_all_permutation(janelas_sujas, quantidade_janelas_sujas);
 
-		procura_comandos_sem_recorrencia(inicio_ponteiro_com_todas_as_permutacoes, p, COMANDOS);
+		if (procura_comandos_sem_recorrencia(inicio_ponteiro_com_todas_as_permutacoes, p, COMANDOS)) {
+			fmt::println("Comandos encontrados");
+		} else {
+			fmt::println("Comandos não encontrados");
+		}
+		// 
 		//instrucao_node root{'X', 0, 0, 0, nullptr};
 		//if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, p)) {
 		//	fmt::println("Comandos encontrados");

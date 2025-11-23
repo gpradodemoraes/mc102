@@ -38,6 +38,7 @@ foreach ($file in Get-ChildItem -Path $test_dir -Filter "*.in") {
 		exit 1
     }
     Compare-Object -ReferenceObject (Get-Content $output_name) -DifferenceObject (Get-Content $TempFile)
+    Write-Host "======================="
 
 }
 

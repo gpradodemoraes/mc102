@@ -120,7 +120,7 @@ instrucao_node* create_instrucao_node(char direcao, int32_t distancia, int32_t p
 		inst->profundidade = profundidade;
 		inst->comandos = comandos;
 		inst->parent = parent;
-		return inst;	
+		return inst;
 	}
 	return nullptr;
 }
@@ -224,7 +224,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		exit(333);
 	}
 
-	while (*janela_suja_corrente == p->current_position &&  p->janelas_array[*janela_suja_corrente] == '.') {
+	while (*janela_suja_corrente == p->current_position && p->janelas_array[*janela_suja_corrente] == '.') {
 		// adiantar o ponteiro para o próximo
 		janela_suja_corrente++;
 	}
@@ -265,7 +265,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 			predio_auxiliar[p->current_position] = 0;
 			p->current_position = current_position;
 		}
-	} else if(passos_verticais < 0) {
+	} else if (passos_verticais < 0) {
 		if (pode_ir_para_baixo(p)) {
 			move_para_baixo(-1 * passos_verticais, p, false);
 			instrucao_node nova{ 'B', -1 * passos_verticais, list_instrucoes->profundidade + 1,
@@ -294,13 +294,13 @@ static void free_instrucoes_nodes(instrucao_node* latest_node) {
 	}
 }
 
-bool procura_comandos_sem_recorrencia(int32_t* array_all_permutations, predio *p, const int32_t maximo_comandos) {
+bool procura_comandos_sem_recorrencia(int32_t* array_all_permutations, predio* p, const int32_t maximo_comandos) {
 	char* backup = (char*)malloc(sizeof(char) * 4 * p->ANDARES * p->JANELAS);
 	memcpy(backup, p->janelas_array, sizeof(char) * 4 * p->ANDARES * p->JANELAS);
 	int32_t counter = 0;
 	while (true) {
 		if (array_all_permutations[counter] == -2) {
-			fmt::println("Comandos não encontrados");
+			//fmt::println("Comandos não encontrados");
 			free(backup);
 			return false;
 		}
@@ -311,7 +311,18 @@ bool procura_comandos_sem_recorrencia(int32_t* array_all_permutations, predio *p
 		instrucao_node* latest_node = create_instrucao_node('X', 0, 0, 0, nullptr);
 		while (true) {
 			int32_t janela = array_all_permutations[counter];
-			if (janela == -1) break;
+			if (janela == -1) {
+				free_instrucoes_nodes(latest_node);
+				counter++;
+				break;
+			}
+
+			if (p->janelas_array[janela] == '.') {
+				// se a janela corrente já está limpa, então pular para a próxima
+				counter++;
+				continue;
+			}
+
 			int32_t passos_horizontais = calcula_passos_horizontais(p->current_position, janela, p);
 
 			if (passos_horizontais > 0) {
@@ -344,25 +355,29 @@ bool procura_comandos_sem_recorrencia(int32_t* array_all_permutations, predio *p
 			// print_predio(p);
 			// fmt::println("\n=======================");
 			p->janelas_array[p->current_position] = '.';
-
-			bool comandos_ok = conta_instrucoes(latest_node) <= maximo_comandos;
+			int32_t total_instrucoes = conta_instrucoes(latest_node);
+			bool comandos_ok = total_instrucoes <= maximo_comandos;
 			if (is_predio_limpo(p) && comandos_ok) {
-				print_predio(p);
-				print_caminho(latest_node, p);
-				fmt::println("Comandos encontrados");
+				//print_predio(p);
+				//print_caminho(latest_node, p);
+				//fmt::println("Comandos encontrados");
 				free_instrucoes_nodes(latest_node);
 				free(backup);
 				return true;
 			}
 			if (!comandos_ok) {
+				//fmt::println("TOTAL INSTRUÇOES: {}", total_instrucoes);
+				//print_caminho(latest_node, p);
 				free_instrucoes_nodes(latest_node);
+				while (array_all_permutations[counter] != -1) counter++;
+				counter++;
 				break;
 			}
 			counter++;
 		}
 
 		//if (list_instrucoes->comandos > max_instrucoes_permitido) {
-		while (array_all_permutations[counter] != -1) counter++;
-		counter++;
+		// while (array_all_permutations[counter] != -1) counter++;
+		// counter++;
 	}
 }
