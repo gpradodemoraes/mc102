@@ -1,18 +1,19 @@
 # Format Style Options - Created with Clang Power Tools
 ---
 BasedOnStyle: Google
-AlignAfterOpenBracket: DontAlign
+BreakBeforeBraces: Attach
+AlignAfterOpenBracket: true
 AllowAllArgumentsOnNextLine: false
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: All
 ColumnLimit: 120
 ContinuationIndentWidth: 2
 Cpp11BracedListStyle: false
 IncludeBlocks: Preserve
-IndentCaseLabels: false
+IndentCaseLabels: true
 IndentWidth: 4
 MaxEmptyLinesToKeep: 3
-ReflowComments: false
+ReflowComments: Always
 SortIncludes: false
 SpacesBeforeTrailingComments: 1
 TabWidth: 4
