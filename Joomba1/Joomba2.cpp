@@ -209,9 +209,11 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	if (!comandos_ok) {
 		// esse não deu. Vamos adiantar o ponteiro até o início da
 		// próxima permutacao
-		while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
-
-		(*janela_suja_indice)++;
+		// while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
+		//
+		//(*janela_suja_indice)++;
+		p->current_position = current_position;
+		p->janelas_array[p->current_position] = current_janela_state;
 		return false;
 	}
 
@@ -220,8 +222,6 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		(*janela_suja_indice)++;
 		janela = permutacoes[*janela_suja_indice];
 	}
-
-
 
 	int32_t passos_horizontais = calcula_passos_horizontais(current_position, janela, p);
 
@@ -276,9 +276,12 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		}
 	}
 
-	// ele já tentou todas as direções possíveis. Então restaurar o valor da janela corrente
-
 	// e retornar falso, pois se todas as direçoes falharam então não tem solução
+	// esse não deu. Vamos adiantar o ponteiro até o início da
+	// próxima permutacao
+	while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
+
+	(*janela_suja_indice)++;
 	return false;
 }
 

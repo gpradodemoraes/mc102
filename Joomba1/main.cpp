@@ -37,7 +37,7 @@ int main(const int argc, char** argv) {
 
 	std::vector<posicao> posicoes;
 	int32_t ANDARES, JANELAS, COMANDOS;
-	fmt::println("==>{}", argv[1]);
+	// fmt::println("==>{}", argv[1]);
 	if (parse_entrada_joomba2(argv[1], &posicoes, &ANDARES, &JANELAS, &COMANDOS)) {
 		predio* p = constroi_predio(ANDARES, JANELAS);
 		if (p == NULL) return 1;
