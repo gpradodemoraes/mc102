@@ -65,8 +65,9 @@ int main(const int argc, char** argv) {
 		int32_t* inicio_ponteiro_com_todas_as_permutacoes =
 		  prepare_all_permutation(janelas_sujas, quantidade_janelas_sujas);
 
+		int32_t indice_janela_corrente = 0;
 		instrucao_node root{ 'X', 0, 0, 0, nullptr };
-		if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, 0, p)) {
+		if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, &indice_janela_corrente, p)) {
 			fmt::println("Comandos encontrados");
 		} else {
 			fmt::println("Comandos não encontrados");

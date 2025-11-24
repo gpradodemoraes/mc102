@@ -182,20 +182,23 @@ static int32_t conta_lista_consecutiva_de_direcao(const char direcao, instrucao_
 }
 
 bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, int32_t* permutacoes,
-					int32_t janela_suja_indice, predio* p) {
+					int32_t* janela_suja_indice, predio* p) {
 	if (!p) return false;
 
-	int32_t janela = permutacoes[janela_suja_indice];
+	int32_t janela = permutacoes[*janela_suja_indice];
 
-	if (janela == -2) return false;
-
+	if (janela == -2) {
+		fmt::println("Esgotamos todas as possibilidades!");
+		return false;
+	}
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
 	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
 
 	bool comandos_ok = list_instrucoes->comandos <= max_instrucoes_permitido;
 	bool predio_esta_limpo = is_predio_limpo(p);
-
+	// fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos, max_instrucoes_permitido);
+	// print_caminho(list_instrucoes, p);
 	if (predio_esta_limpo && comandos_ok) {
 		// missão cumprida!
 		// fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos,
@@ -206,16 +209,16 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	if (!comandos_ok) {
 		// esse não deu. Vamos adiantar o ponteiro até o início da
 		// próxima permutacao
-		while (permutacoes[janela_suja_indice] != -1) janela_suja_indice++;
+		while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
 
-		janela_suja_indice++;
+		(*janela_suja_indice)++;
 		return false;
 	}
 
 	while (janela != -1 && p->janelas_array[janela] != '#') {
 		// janela já está limpa. Vamos adiantar o ponteiro
-		janela_suja_indice++;
-		janela = permutacoes[janela_suja_indice];
+		(*janela_suja_indice)++;
+		janela = permutacoes[*janela_suja_indice];
 	}
 
 
@@ -254,6 +257,9 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 																 : list_instrucoes->comandos + 1,
 								 list_instrucoes };
 			if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
+			// quando chegar aqui significa que a recursão acima voltou falso.
+			// Ela adiantou o ponteiro janela_suja_indice porém quando chega aqui, o janela_suja_indice volta a
+			// ser o que era antes!
 			p->current_position = current_position;
 			p->janelas_array[p->current_position] = current_janela_state;
 		}
