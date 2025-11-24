@@ -65,18 +65,12 @@ int main(const int argc, char** argv) {
 		int32_t* inicio_ponteiro_com_todas_as_permutacoes =
 		  prepare_all_permutation(janelas_sujas, quantidade_janelas_sujas);
 
-		if (procura_comandos_sem_recorrencia(inicio_ponteiro_com_todas_as_permutacoes, p, COMANDOS)) {
+		instrucao_node root{ 'X', 0, 0, 0, nullptr };
+		if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, 0, p)) {
 			fmt::println("Comandos encontrados");
 		} else {
 			fmt::println("Comandos não encontrados");
 		}
-		//
-		// instrucao_node root{'X', 0, 0, 0, nullptr};
-		// if (checar_limpeza(&root, COMANDOS, inicio_ponteiro_com_todas_as_permutacoes, p)) {
-		//	fmt::println("Comandos encontrados");
-		//} else {
-		//	fmt::println("Comandos não encontrados");
-		//}
 		destroi_predio(p);
 		destroi_predio_auxiliar();
 		destroy_all_permutations();

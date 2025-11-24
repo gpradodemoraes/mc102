@@ -2,15 +2,17 @@
   "version": "0.2.0",
   "defaults": {},
   "configurations": [
+
     {
       "name": "Joomba1.exe",
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/out/build/joomba1/Joomba1.exe",
       "args": [
-          "testes_copia_local\\arq07.in"
+          "testes\\arq07.in"
         ],
-        "cwd": "${workspaceRoot}"
+        "cwd": "${workspaceRoot}",
+        "console": "externalTerminal"
     },
     {
         "name": "Joomba2.exe",
@@ -18,9 +20,10 @@
         "request": "launch",
         "program": "${workspaceRoot}/out/build/joomba2/Joomba2.exe",
         "args": [
-            "..\\Joomba2\\testes\\arq01.in"
+            "..\\Joomba2\\testes\\arq05.in"
         ],
-        "cwd": "${workspaceRoot}"
+        "cwd": "${workspaceRoot}",
+        "console": "externalTerminal"
     }
   ]
 }

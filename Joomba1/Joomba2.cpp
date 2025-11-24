@@ -15,7 +15,7 @@ bool parse_entrada_joomba2(char* filepath, std::vector<posicao>* posicoes, int32
 		int32_t COMANDOS = -1;
 		std::string line;
 		while (getline(file, line)) {
-			fmt::println("|=>{}", line);
+			// fmt::println("|=>{}", line);
 			std::stringstream ss(line);
 			std::string word;
 			posicao i{ 'X', -1, -1 };
@@ -181,58 +181,46 @@ static int32_t conta_lista_consecutiva_de_direcao(const char direcao, instrucao_
 	return counter;
 }
 
-bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, int32_t* janela_suja_corrente,
-					predio* p) {
+bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, int32_t* permutacoes,
+					int32_t janela_suja_indice, predio* p) {
 	if (!p) return false;
-	static int32_t qualquercoisa = 0;
-	// print_predio(p);
-	// print_caminho(list_instrucoes, p);
 
-	// se essa posicão já foi visitada, então retornar falso poi
-	// com certeza existe um caminho melhor!
+	int32_t janela = permutacoes[janela_suja_indice];
 
-
-	// if (predio_auxiliar[p->current_position] == 1) return false;
-
+	if (janela == -2) return false;
 
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
 	p->janelas_array[p->current_position] = '.'; // marquei a posição corrente como limpa
-	predio_auxiliar[p->current_position] = 1;	 // marcar como visitado
-	// Verificar se o prédio está limpo
-	bool predio_esta_limpo = is_predio_limpo(p);
-	// int32_t total_instrucoes = conta_instrucoes(list_instrucoes);
 
-	if (list_instrucoes->comandos > max_instrucoes_permitido) {
-		// restaura o status original dessa janela
-		p->janelas_array[current_position] = current_janela_state;
-		return false;
-	}
-	if (predio_esta_limpo) {
-		// print_lista_instrucoes(list_instrucoes);
-		fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos, max_instrucoes_permitido);
-		print_caminho(list_instrucoes, p);
+	bool comandos_ok = list_instrucoes->comandos <= max_instrucoes_permitido;
+	bool predio_esta_limpo = is_predio_limpo(p);
+
+	if (predio_esta_limpo && comandos_ok) {
+		// missão cumprida!
+		// fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos,
+		// max_instrucoes_permitido); print_caminho(list_instrucoes, p);
 		return true;
 	}
-	// salva o estado atual da janela
 
-	if (*janela_suja_corrente == -1) {
-		// não é para acontecer. Pois se cheguei aqui, signfica
-		// que percorri todas as janelas sujas
-		exit(333);
+	if (!comandos_ok) {
+		// esse não deu. Vamos adiantar o ponteiro até o início da
+		// próxima permutacao
+		while (permutacoes[janela_suja_indice] != -1) janela_suja_indice++;
+
+		janela_suja_indice++;
+		return false;
 	}
 
-	while (*janela_suja_corrente == p->current_position && p->janelas_array[*janela_suja_corrente] == '.') {
-		// adiantar o ponteiro para o próximo
-		janela_suja_corrente++;
+	while (janela != -1 && p->janelas_array[janela] != '#') {
+		// janela já está limpa. Vamos adiantar o ponteiro
+		janela_suja_indice++;
+		janela = permutacoes[janela_suja_indice];
 	}
-	// fmt::println("PROFUNDIDADE({}): {}", proxima_direcao, list_instrucoes->profundidade);
-	print_caminho(list_instrucoes, p);
-	// getch();
 
-	// int32_t janela_suja_mais_proxima = procura_janela_mais_proxima(current_position, p);
 
-	int32_t passos_horizontais = calcula_passos_horizontais(current_position, *janela_suja_corrente, p);
+
+	int32_t passos_horizontais = calcula_passos_horizontais(current_position, janela, p);
 
 	if (passos_horizontais > 0) {
 		move_direita(passos_horizontais, p, false);
@@ -240,20 +228,23 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 							 list_instrucoes->direcao == 'D' ? list_instrucoes->comandos
 															 : list_instrucoes->comandos + 1,
 							 list_instrucoes };
-		if (checar_limpeza(&nova, max_instrucoes_permitido, janela_suja_corrente, p)) return true;
-		predio_auxiliar[p->current_position] = 0;
+		if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 		p->current_position = current_position;
+		p->janelas_array[p->current_position] = current_janela_state;
 	} else if (passos_horizontais < 0) {
 		move_esquerda(-1 * passos_horizontais, p, false);
 		instrucao_node nova{ 'E', -1 * passos_horizontais, list_instrucoes->profundidade + 1,
 							 list_instrucoes->direcao == 'E' ? list_instrucoes->comandos
 															 : list_instrucoes->comandos + 1,
 							 list_instrucoes };
-		if (checar_limpeza(&nova, max_instrucoes_permitido, janela_suja_corrente, p)) return true;
-		predio_auxiliar[p->current_position] = 0;
+
+		if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 		p->current_position = current_position;
+		p->janelas_array[p->current_position] = current_janela_state;
 	}
-	int32_t passos_verticais = calcula_passos_verticais(current_position, *janela_suja_corrente, p);
+
+
+	int32_t passos_verticais = calcula_passos_verticais(current_position, janela, p);
 
 	if (passos_verticais > 0) {
 		if (pode_ir_para_cima(p)) {
@@ -262,9 +253,9 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 								 list_instrucoes->direcao == 'C' ? list_instrucoes->comandos
 																 : list_instrucoes->comandos + 1,
 								 list_instrucoes };
-			if (checar_limpeza(&nova, max_instrucoes_permitido, janela_suja_corrente, p)) return true;
-			predio_auxiliar[p->current_position] = 0;
+			if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 			p->current_position = current_position;
+			p->janelas_array[p->current_position] = current_janela_state;
 		}
 	} else if (passos_verticais < 0) {
 		if (pode_ir_para_baixo(p)) {
@@ -273,14 +264,13 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 								 list_instrucoes->direcao == 'B' ? list_instrucoes->comandos
 																 : list_instrucoes->comandos + 1,
 								 list_instrucoes };
-			if (checar_limpeza(&nova, max_instrucoes_permitido, janela_suja_corrente, p)) return true;
-			predio_auxiliar[p->current_position] = 0;
+			if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 			p->current_position = current_position;
+			p->janelas_array[p->current_position] = current_janela_state;
 		}
 	}
 
 	// ele já tentou todas as direções possíveis. Então restaurar o valor da janela corrente
-	p->janelas_array[current_position] = current_janela_state;
 
 	// e retornar falso, pois se todas as direçoes falharam então não tem solução
 	return false;

@@ -30,8 +30,8 @@ struct instrucao_node {
 bool parse_entrada_joomba2(char* filepath, std::vector<posicao>* posicoes, int32_t* ANDARES_, int32_t* JANELAS,
 						   int32_t* COMANDOS);
 
-bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, int32_t* janela_suja_corrente,
-					predio* p);
+bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_permitido, int32_t* permutacoes,
+					int32_t janela_suja_indice, predio* p);
 
 int32_t conta_instrucoes(instrucao_node* i);
 
