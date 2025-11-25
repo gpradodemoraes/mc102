@@ -3,3 +3,5 @@ testes_copia_local
 .idea
 CMakeUserPresets.json
 CPTCMakeBuild
+.cache
+compile_commands.json

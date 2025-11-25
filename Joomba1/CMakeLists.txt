@@ -29,5 +29,6 @@ if(JOOMBA_2)
 	target_link_libraries(Joomba2 PRIVATE fmt::fmt)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # TODO: Add tests and install targets if needed.

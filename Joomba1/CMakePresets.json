@@ -30,7 +30,7 @@
             "vendor": {
                 "jetbrains.com/clion": {
                     "toolchain": "Visual Studio",
-                    "generator": "Ninja"
+                    "generator": "Ninja Multi-Config"
                 }
             }
         },
