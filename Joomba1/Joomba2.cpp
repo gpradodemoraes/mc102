@@ -59,7 +59,7 @@ bool parse_entrada_joomba2(char* filepath, std::vector<posicao>* posicoes, int32
 static void print_lista_instrucoes(instrucao_node* i) {
 	instrucao_node* n = i;
 	while (n != nullptr) {
-		fmt::println("direcao {}; distancia {}", n->direcao, n->distancia);
+		fmt::println("direcao {}; distancia {}; comandos {}", n->direcao, n->distancia, n->comandos);
 		n = n->parent;
 	}
 }
@@ -126,19 +126,19 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 	/** pegar a próxima janela suja dentro da nossa lista de permutaçoes atual */
 	int32_t janela = permutacoes[*janela_suja_indice];
 
-	/** 
+	/**
 	 * colocamos um marcador janela = -2 no final do array que contém todas as permutações
 	 * se chegarmos no valor -2 significa que não existe mais nenhuma permutação a tentar
 	 */
 	if (janela == -2) {
-		fmt::println("Esgotamos todas as possibilidades!");
+		// fmt::println("Esgotamos todas as possibilidades!");
 		return false;
 	}
 
-	/** 
+	/**
 	 * vamos salvar o estado corrente do prédio e da janela atual
 	 * para que a gente possa retornar nele caso estejamos indo pelo caminho errado
-	 * assim podemos voltar a subir na pilha testando novos caminhos	 * 
+	 * assim podemos voltar a subir na pilha testando novos caminhos	 *
 	 */
 	char current_janela_state = p->janelas_array[p->current_position];
 	int32_t current_position = p->current_position;
@@ -159,7 +159,7 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 		 * e fizemos isso dentro do número máximo de comandos
 		 * permitidos. Agora é só retornar true que o true vai se propagar
 		 * na pilha até retornar na primeira chamada dentro da função main
-		 */ 
+		 */
 		// fmt::println("total instrucoes: {}; máximo permitido: {}", list_instrucoes->comandos,
 		// max_instrucoes_permitido); print_caminho(list_instrucoes, p);
 		return true;
@@ -196,19 +196,22 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 							 list_instrucoes->direcao == 'D' ? list_instrucoes->comandos
 															 : list_instrucoes->comandos + 1,
 							 list_instrucoes };
+		int32_t salva_indice = *janela_suja_indice;
 		if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 		p->current_position = current_position;
 		p->janelas_array[p->current_position] = current_janela_state;
+		*janela_suja_indice = salva_indice;
 	} else if (passos_horizontais < 0) {
 		move_esquerda(-1 * passos_horizontais, p, false);
 		instrucao_node nova{ 'E', -1 * passos_horizontais, list_instrucoes->profundidade + 1,
 							 list_instrucoes->direcao == 'E' ? list_instrucoes->comandos
 															 : list_instrucoes->comandos + 1,
 							 list_instrucoes };
-
+		int32_t salva_indice = *janela_suja_indice;
 		if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 		p->current_position = current_position;
 		p->janelas_array[p->current_position] = current_janela_state;
+		*janela_suja_indice = salva_indice;
 	}
 
 
@@ -221,9 +224,11 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 								 list_instrucoes->direcao == 'C' ? list_instrucoes->comandos
 																 : list_instrucoes->comandos + 1,
 								 list_instrucoes };
+			int32_t salva_indice = *janela_suja_indice;
 			if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 			p->current_position = current_position;
 			p->janelas_array[p->current_position] = current_janela_state;
+			*janela_suja_indice = salva_indice;
 		}
 	} else if (passos_verticais < 0) {
 		if (pode_ir_para_baixo(p)) {
@@ -232,25 +237,30 @@ bool checar_limpeza(instrucao_node* list_instrucoes, int32_t max_instrucoes_perm
 								 list_instrucoes->direcao == 'B' ? list_instrucoes->comandos
 																 : list_instrucoes->comandos + 1,
 								 list_instrucoes };
+			int32_t salva_indice = *janela_suja_indice;
 			if (checar_limpeza(&nova, max_instrucoes_permitido, permutacoes, janela_suja_indice, p)) return true;
 			p->current_position = current_position;
 			p->janelas_array[p->current_position] = current_janela_state;
+			*janela_suja_indice = salva_indice;
 		}
 	}
 
-	/**
-	 * Se chegamos até aqui, significa que todas as opções
-	 * de andar para na horizontal e na vertical já foram tentadas.
-	 * Essa permutação não tem solução válida
-	 * Vamos adiantar o ponteiro da permutação 
-	 * 
-	 */
+	if (list_instrucoes->direcao == 'X') {
+		/**
+		 * Voltamos ao stack mais baixo dessa permutação.
+		 * Significa que essa permutação não resultou num resultado válido
+		 * Então vamos dar início a uma nova permutação
+		 *
+		 * Primeiramente a gente adianta o ponteiro até a próxima permutação
+		 */
+		while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
+		(*janela_suja_indice)++;
 
-	// e retornar falso, pois se todas as direçoes falharam então não tem solução
-	// esse não deu. Vamos adiantar o ponteiro até o início da
-	// próxima permutacao
-	while (permutacoes[*janela_suja_indice] != -1) (*janela_suja_indice)++;
+		/**
+		 * Agora vamos chamar a próxima permutação
+		 */
+		return checar_limpeza(list_instrucoes, max_instrucoes_permitido, permutacoes, janela_suja_indice, p);
+	}
 
-	(*janela_suja_indice)++;
 	return false;
 }
