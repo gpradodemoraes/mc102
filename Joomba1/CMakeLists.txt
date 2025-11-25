@@ -10,6 +10,7 @@ cmake_minimum_required (VERSION 3.31)
 # endif()
 
 project(Joomba1)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(JOOMBA_1 "Enable Joomba 1" OFF)
 option(JOOMBA_2 "Enable Joomba 2" OFF)
@@ -29,6 +30,5 @@ if(JOOMBA_2)
 	target_link_libraries(Joomba2 PRIVATE fmt::fmt)
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # TODO: Add tests and install targets if needed.
