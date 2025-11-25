@@ -34,8 +34,6 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 			all_permutations[full_permutation_index] = a[j];
 			full_permutation_index++;
 		}
-		// full_permutation_index--;
-		// full_permutation_index += original_array_size + 1;
 		all_permutations[full_permutation_index] = -1;
 		full_permutation_index++;
 	} else {
@@ -49,10 +47,20 @@ static void permute(int32_t* a, int32_t l, int32_t r) {
 	}
 }
 
+/**
+ * essa função calcula todas as permutações possíveis
+ * ela aloca um vetor que vai caber todas as permutações possíveis
+ * (usando o cálculo do fatorial abaixo) e deixa espaço entre as permutações
+ * para marcar onde uma termina e outra começa com -1 e ao fim de todas
+ * as permutações, depois do último -1, ele vai marcar o final absoluto com -2
+ */
 int32_t* prepare_all_permutation(int32_t* array_model, size_t size) {
 	original_array_size = size;
 	uint32_t amount_of_permutations = 1;
 
+	/**
+	 * a linha abaixo é equivalente a fatorial(size)
+	 */
 	for (int32_t i = 1; i <= size; ++i) amount_of_permutations *= i;
 
 	all_permutations = (int32_t*)malloc(sizeof(int32_t) * (amount_of_permutations * (size + 1) + 1));
@@ -66,11 +74,3 @@ int32_t* prepare_all_permutation(int32_t* array_model, size_t size) {
 void destroy_all_permutations() { free(all_permutations); }
 
 int32_t* get_next_permutation() { return all_permutations + current_index++ * original_array_size; }
-
-// Driver code
-// int main() {
-// 	int32_t str[] = "ABC";
-// 	int n = strlen(str);
-// 	permute(str, 0, n - 1);
-// 	return 0;
-// }
