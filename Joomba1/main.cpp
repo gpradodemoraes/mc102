@@ -1,5 +1,6 @@
 ﻿// --- By Gabriel ---
 
+#include <cstdint>
 #if defined JOOMBA_1
 #include "Joomba1.h"
 #elif defined JOOMBA_2
@@ -56,12 +57,12 @@ int main(const int argc, char** argv) {
 			}
 		}
 		// print_predio(p);
-		if(quantidade_janelas_sujas == 0) return 0;
+		if (quantidade_janelas_sujas == 0) return 0;
 		int32_t* janelas_sujas = (int32_t*)malloc(sizeof(int32_t) * quantidade_janelas_sujas);
 		int32_t counter = 0;
 
 		/**
-		 * Criando um array auxiliar de janelas sujas que será usado 
+		 * Criando um array auxiliar de janelas sujas que será usado
 		 * para calcular todas as permutações de índices de janelas sujas
 		 * Vamos rodar recursivamente todas as permutações de janelas sujas até encontrar
 		 * uma solução ou até esgotar todas as possibilidades
@@ -82,7 +83,7 @@ int main(const int argc, char** argv) {
 
 		/**
 		 * instrucao_node serve para guardar os dados
-		 * dos comandos dados ao robô e ver se já chegamos no limite e 
+		 * dos comandos dados ao robô e ver se já chegamos no limite e
 		 * também para poder printar o caminho que fizemos
 		 * para fins de debugar
 		 */
