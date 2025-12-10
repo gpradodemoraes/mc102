@@ -8,10 +8,9 @@
             "request": "launch",
             "program": "${workspaceRoot}/build/conectando.exe",
             "args": [
-                "a",
-                "b"
+                "test_data/arq01.in"
             ],
-            "cwd": "${workspaceRoot}/build",
+            "cwd": "${workspaceRoot}",
             "console": "externalTerminal"
         }
     ]
