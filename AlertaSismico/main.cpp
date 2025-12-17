@@ -1,7 +1,9 @@
+#include <cfloat>
 #include <vector>
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <limits.h>
 #include <fmt/base.h>
 #include <fmt/core.h>
 
@@ -10,7 +12,6 @@ int get_input(const char *inputfile, std::vector<double> *amplitudes, int *janel
 		std::string line;
 		int counter{ 0 };
 		while (std::getline(file, line)) {
-			fmt::println("=> {}", line);
 			if (counter == 0) {
 				//  2.1, 3.5, 1.8, 4.2, 2.9, 5.1, 1.0, 6.3
 				std::stringstream ss(line);
@@ -52,6 +53,19 @@ int main(const int argc, char **argv) {
 	double valor_maximo{ 0.0 };
 
 	get_input(argv[1], &amplitudes, &janela, &valor_maximo);
+
+	for (int inicio = 0, fim = janela; fim < amplitudes.size() + 1; inicio++, fim++) {
+		double max = DBL_MIN;
+		double min = DBL_MAX;
+		for (int i = inicio; i < fim; i++) {
+			if (amplitudes[i] > max) max = amplitudes[i];
+			if (amplitudes[i] < min) min = amplitudes[i];
+		}
+		if (max - min > valor_maximo)
+			fmt::println("Janela {}: emitir alerta", inicio + 1);
+		else
+			fmt::println("Janela {}: normal", inicio + 1);
+	}
 
 	return 0;
 }
