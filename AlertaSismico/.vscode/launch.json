@@ -6,10 +6,9 @@
             "name": "debug_me",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/esqueleto.exe",
+            "program": "${workspaceRoot}/build/alertasismico.exe",
             "args": [
-                "a",
-                "b"
+                "../testes/arq01.in"
             ],
             "cwd": "${workspaceRoot}/build",
             "console": "externalTerminal"
