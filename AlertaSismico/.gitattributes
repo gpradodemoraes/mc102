@@ -18,6 +18,8 @@
 *.json eol=lf
 .clang-format eol=lf
 .editorconfig eol=lf
+.in eol=lf
+.out eol=lf
 
 # Declare files that will always have CRLF line endings on checkout.
 *.sln text eol=crlf
