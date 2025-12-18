@@ -73,13 +73,13 @@ int main(const int argc, char **argv) {
 	// janela_corrente->tamanho = 1;
 
 	for (int inicio = 0, fim = janela; fim < amplitudes.size() + 1; inicio++, fim++) {
-		double max = DBL_MIN;
+		double max = -1 * DBL_MAX;
 		double min = DBL_MAX;
 		for (int i = inicio; i < fim; i++) {
 			if (amplitudes[i] > max) max = amplitudes[i];
 			if (amplitudes[i] < min) min = amplitudes[i];
 		}
-		if (max - min > valor_maximo) {
+		if (std::abs(max - min) > valor_maximo) {
 			fmt::println("Janela {}: emitir alerta", inicio + 1);
 			if (estamos_em_alerta) {
 				janela_corrente->janela_final++;
