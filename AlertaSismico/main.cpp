@@ -99,8 +99,12 @@ int main(const int argc, char **argv) {
 					janela_dados *temp = janela_corrente;
 					janela_corrente = maior_janela;
 					maior_janela = temp;
-					estamos_em_alerta = false;
+				} else {
+					janela_corrente->janela_inicial = inicio + 1;
+					janela_corrente->janela_final = inicio + 1;
+					janela_corrente->tamanho = 1;
 				}
+				estamos_em_alerta = false;
 			}
 		}
 	}
@@ -108,10 +112,13 @@ int main(const int argc, char **argv) {
 		janela_dados *temp = janela_corrente;
 		janela_corrente = maior_janela;
 		maior_janela = temp;
-		estamos_em_alerta = false;
 	}
-	fmt::println("Maior sequência de alertas: Janela {} até Janela {} (tamanho {})", maior_janela->janela_inicial,
-				 maior_janela->janela_final, maior_janela->tamanho);
+	if (maior_janela->tamanho == 0 && maior_janela->janela_final == 0 && maior_janela->janela_inicial == 0) {
+		fmt::println("Nenhuma sequência de alertas consecutivos detectada");
+	} else {
+		fmt::println("Maior sequência de alertas: Janela {} até Janela {} (tamanho {})", maior_janela->janela_inicial,
+					 maior_janela->janela_final, maior_janela->tamanho);
+	}
 
 	free(maior_janela);
 	free(janela_corrente);
